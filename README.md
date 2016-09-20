@@ -1,0 +1,1 @@
+Python scripts for the CMIP5 bit of Kaitlin's PhD: choosing the best CMIP5 models to use as boundary conditions for ROMS and FESOM, and making those boundary conditions. See file_guide.txt for more detailed documentation.
