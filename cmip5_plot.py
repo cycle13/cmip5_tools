@@ -36,7 +36,7 @@ def cmip5_plot (var, season, model_names, save=False, fig_name=None):
     # Figure out whether this is an atmosphere or ocean variable
     if var in ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad']:
         realm = 'atmos'
-    elif var in ['temp', 'salt', 'u', 'v']:
+    elif var in ['temp', 'salt']:
         realm = 'ocean'
     else:
         print 'Unknown variable'
@@ -83,12 +83,6 @@ def cmip5_plot (var, season, model_names, save=False, fig_name=None):
     elif var == 'salt':
         plot_title = 'Salinity'
         plot_units = 'psu'
-    elif var == 'u':
-        plot_title = 'Eastward Velocity'
-        plot_units = 'm/s'
-    elif var == 'v':
-        plot_title = 'Northward Velocity'
-        plot_units = 'm/s'
 
     # 40 visually distinct (or as visually distinct as possible) colours for
     # plotting, generated using http://phrogz.net/css/distinct-colors.html
@@ -230,10 +224,7 @@ def cmip5_plot (var, season, model_names, save=False, fig_name=None):
 if __name__ == "__main__":
 
     # Make a list of all valid model names
-    all_models = build_model_list()
-    all_model_names = []
-    for model in all_models:
-        all_model_names.append(model.name)
+    all_model_names = build_model_list()
     all_model_names.append('MMM')
     model_names = []
 

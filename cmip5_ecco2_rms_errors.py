@@ -5,8 +5,8 @@ from matplotlib.pyplot import *
 
 # Calculate root-mean square errors (adapted from Gleckler et al., 2008 to be
 # in depth-longitude space instead of latitude-longitude space) for each of 39
-# CMIP5 models and the multi-model mean, with respect to 4 ECCO2 ocean
-# variables at the northern boundary of ROMS (currently 30S). Use the monthly
+# CMIP5 models and the multi-model mean, with respect to ECCO2 temperature and
+# salinity at the northern boundary of ROMS (currently 30S). Use the monthly
 # climatology averaged over 1992-2005 inclusive. Also calculate the relative
 # errors as in Gleckler et al. and make a "portrait plot" of coloured tiles
 # in a model vs variable matrix. Save both rms errors and relative errors into
@@ -19,7 +19,7 @@ def cmip5_ecco2_rms_errors ():
     # ecco2_climatology_netcdf.py and cmip5_ocean_climatology_netcdf.py)
     directory = '/short/y99/kaa561/CMIP5_forcing/ocean/'
     # Variable names in NetCDF files
-    var_names = ['temp', 'salt', 'u', 'v']
+    var_names = ['temp', 'salt']
     # Radius of the Earth in metres
     r = 6.371e6
     # Degrees to radians conversion factor
@@ -57,12 +57,8 @@ def cmip5_ecco2_rms_errors ():
     dt = tile(dt, (size(lon), size(depth), 1))
     dt = transpose(dt)    
 
-    # Build a list of CMIP5 Model objects
-    models = build_model_list()
-    # Build a corresponding list of model names
-    model_names = []
-    for model in models:
-        model_names.append(model.name)
+    # Build a list of CMIP5 model names
+    model_names = build_model_list()
     # Add the multi-model mean to the list
     model_names.append('MMM')
 

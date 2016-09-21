@@ -43,24 +43,13 @@ def cmip5_atmos_climatology_netcdf (model_name):
     era_lat = id.variables['latitude'][:]
     id.close()
 
-    # Build a list of Model objects for CMIP5
-    all_models = build_model_list()
-    # Build a corresponding list of all CMIP5 model names
-    all_model_names = []
-    for model in all_models:
-        all_model_names.append(model.name)
-    # Find index of model_name in all_model_names, and select the Model object
-    # at the same index of all_models
-    # Now model_name has a corresponding Model object
-    model = all_models[all_model_names.index(model_name)]
-
     # Loop over variables
     for i in range(len(var_names)):
         var = var_names[i]
         print 'Processing variable ' + var
 
         # Read monthly climatology for this variable
-        model_data, model_lon, model_lat, tmp = cmip5_field(model, expt, var, start_year, end_year)
+        model_data, model_lon, model_lat, tmp = cmip5_field(model_name, expt, var, start_year, end_year)
         # Set up array for climatology interpolated to ERA-Interim grid
         model_data_interp = ma.empty([12, size(era_lat), size(era_lon)])
         if model_data is not None:
@@ -177,6 +166,6 @@ if __name__ == "__main__":
     # Process one model at a time
     models = build_model_list()
     for model in models:
-        print model.name
-        cmip5_atmos_climatology_netcdf(model.name)
+        print model
+        cmip5_atmos_climatology_netcdf(model)
             

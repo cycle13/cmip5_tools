@@ -14,7 +14,7 @@ from scipy.spatial import KDTree
 # module load python/2.7.6-matplotlib
 
 # For the given CMIP5 model, calculates the monthly climatology from 1992-2005
-# inclusive for 4 ocean variables. Interpolates to the ECCO2 grid at the
+# inclusive for temperature and salinity. Interpolates to the ECCO2 grid at the
 # northern boundary of ROMS (currently 30S, see ecco2_climatology_netcdf.py)
 # and saves to a NetCDF file. Note that to run this script, you must have
 # previously run ecco2_climatology_netcdf.py.
@@ -30,11 +30,11 @@ def cmip5_ocean_climatology_netcdf (model_name):
     # Northern boundary of ROMS
     nbdry = -30.0
     # CMIP5 variable names
-    var_names = ['thetao', 'so', 'uo', 'vo']
+    var_names = ['thetao', 'so']
     # Variable names to use in NetCDF file
-    var_names_output = ['temp', 'salt', 'u', 'v']
+    var_names_output = ['temp', 'salt']
     # Units of final variables (note some conversions in cmip5_field)
-    var_units = ['degC', 'psu', 'm/s', 'm/s']
+    var_units = ['degC', 'psu']
     # Path to output NetCDF file
     output_file = '/short/y99/kaa561/CMIP5_forcing/ocean/' + model_name + '.nc'
     # Path to corresponding ECCO2 file (created using
@@ -49,24 +49,13 @@ def cmip5_ocean_climatology_netcdf (model_name):
     mask = id.variables['temp'][0,:,:].mask
     id.close()
 
-    # Build a list of Model objects for CMIP5
-    all_models = build_model_list()
-    # Build a corresponding list of all CMIP5 model names
-    all_model_names = []
-    for model in all_models:
-        all_model_names.append(model.name)
-    # Find index of model_name in all_model_names, and select the Model object
-    # at the same index of all_models
-    # Now model_name has a corresponding Model object
-    model = all_models[all_model_names.index(model_name)]
-
     # Loop over variables
     for i in range(len(var_names)):
         var = var_names[i]
         print 'Processing variable ' + var
 
         # Read monthly climatology for this variable
-        model_data, model_lon, model_lat, model_depth = cmip5_field(model, expt, var, start_year, end_year)
+        model_data, model_lon, model_lat, model_depth = cmip5_field(model_name, expt, var, start_year, end_year)
         # Set up array for climatology interpolated to ECCO2 grid
         model_data_interp = ma.empty([12, size(ecco_depth), size(ecco_lon)])
         if model_data is not None:
@@ -366,5 +355,5 @@ if __name__ == "__main__":
     # Process one model at a time
     models = build_model_list()
     for model in models:
-        print model.name
-        cmip5_ocean_climatology_netcdf(model.name)
+        print model
+        cmip5_ocean_climatology_netcdf(model)

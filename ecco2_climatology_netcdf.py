@@ -4,7 +4,7 @@ from netCDF4 import Dataset
 
 # Calculate the ECCO2 monthly climatology from 1992-2005 inclusive, interpolated
 # to the northern boundary of the ROMS domain (currently 30S, this is set in
-# ecco2_field.py), for 4 ocean variables. Save to a NetCDF file.
+# ecco2_field.py), for temperature and salinity. Save to a NetCDF file.
 def ecco2_climatology_netcdf ():
 
     # Date range for climatology
@@ -13,9 +13,9 @@ def ecco2_climatology_netcdf ():
     # Names of ECCo2 variables
     var_names = ['THETA', 'SALT', 'UVEL', 'VVEL']
     # Variable names to use for NetCDF file
-    var_names_output = ['temp', 'salt', 'u', 'v']
+    var_names_output = ['temp', 'salt']
     # Units of final variables (note there are some conversions in ecco2_field)
-    var_units = ['degC', 'psu', 'm/s', 'm/s']
+    var_units = ['degC', 'psu']
     # Path to output NetCDF file
     output_file = '/short/y99/kaa561/CMIP5_forcing/ocean/ECCO2.nc'
 

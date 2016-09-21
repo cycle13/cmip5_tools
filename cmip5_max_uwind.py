@@ -166,10 +166,7 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
 if __name__ == "__main__":
 
     # Make a list of all valid model names
-    all_models = build_model_list()
-    all_model_names = []
-    for model in all_models:
-        all_model_names.append(model.name)
+    all_model_names = build_model_list()
     all_model_names.append('MMM')
     model_names = []
 

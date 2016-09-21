@@ -6,7 +6,7 @@ from scipy.interpolate import interp1d
 # Read CMIP5 output for the given model, experiment, and variable name. Return
 # the monthly climatology as well as the grid.
 # Input:
-# model = Model object (class definition in cmip5_paths.py)
+# model = name of model (must match list in cmip5_paths.py)
 # expt = string containing name of experiment, eg 'historical'
 # var_name = string containing name of variable, eg 'tas'
 # start_year, end_year = integers containing years over which to calculate
@@ -36,19 +36,11 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
         # Exit early
         return None, None, None, None
 
-    # There is something weird going on with evaporation in the Norwegian GCMs;
-    # they claim to have units of kg/m^2/s but there's no way that's correct.
-    # Exclude them for now, until we figure out what the units actually are.
-    if var_name == 'evspsbl' and model.name in ['NorESM1-M', 'NorESM1-ME']:
-        print 'Skipping ' + model.name + ' because evaporation units are screwy'
-        # Exit early
-        return None, None, None, None
-
     # Get the directory where the model output is stored
-    path = model.get_directory(expt, var_name)
+    path = get_directory(model, expt, var_name)
     # If the string is empty, this output doesn't exist
     if path == '':
-        print 'Warning: no data found for model ' + model.name + ', experiment ' + expt + ', variable ' + var_name
+        print 'Warning: no data found for model ' + model + ', experiment ' + expt + ', variable ' + var_name
         # Exit early
         return None, None, None, None
 
@@ -87,7 +79,7 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
                 lat = id.variables['lat'][:]
                 lon = id.variables['lon'][:]
                 if realm == 'ocean':
-                    if model.name == 'inmcm4':
+                    if model == 'inmcm4':
                         # inmcm4 has sigma coordinates; convert to z
                         sigma = id.variables['lev'][:]
                         h = id.variables['depth'][:,:]
@@ -155,7 +147,11 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
             if realm == 'atmos':
                 data[t,:,:] /= num_months[t]
             elif realm == 'ocean':
-                data[t,:,:,:] /= num_months[t]
+                data[t,:,:,:] /= num_months[t]\
+
+    # Convert units for evaporation in NorESM1-ME
+    if var_name == 'evspsbl' and model == 'NorESM1-ME':
+        data = 1e-3*data
 
     # Conversions if necessary
     if var_name in ['pr', 'prsn', 'evspsbl']:

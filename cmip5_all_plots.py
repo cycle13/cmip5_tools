@@ -14,13 +14,10 @@ from cmip5_plot import *
 def cmip5_all_plots (season):
 
     # All possible variable names
-    var_names = ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad', 'temp', 'salt', 'u', 'v']
+    var_names = ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad', 'temp', 'salt']
 
     # Make a list of all possible model names
-    models = build_model_list()
-    model_names = []
-    for model in models:
-        model_names.append(model.name)
+    model_names = build_model_list()
     model_names.append('MMM')
 
     # Call cmip5_plot for each variable

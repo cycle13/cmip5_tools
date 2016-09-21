@@ -68,12 +68,8 @@ def cmip5_eraint_rms_errors():
     dt = tile(dt, (size(lon), size(lat), 1))
     dt = transpose(dt)        
 
-    # Build a list of CMIP5 Model objects
-    models = build_model_list()
-    # Build a corresponding list of model names
-    model_names = []
-    for model in models:
-        model_names.append(model.name)
+    # Build a list of CMIP5 model names
+    model_names = build_model_list()
     # Add the multi-model mean to the list
     model_names.append('MMM')
 

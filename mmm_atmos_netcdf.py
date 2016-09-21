@@ -43,12 +43,8 @@ def mmm_atmos_netcdf ():
     out_id.variables['time'].units = 'month'
     out_id.variables['time'][:] = arange(1, 12+1)
 
-    # Get a list of CMIP5 Model objects
-    models = build_model_list()
-    # Build a corresponding list of model names
-    model_names = []
-    for model in models:
-        model_names.append(model.name)
+    # Get a list of CMIP5 model names
+    model_names = build_model_list()
 
     # Loop over variables
     for i in range(len(var_names)):

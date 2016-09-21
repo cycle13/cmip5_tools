@@ -15,9 +15,9 @@ def mmm_ocean_netcdf ():
     # Path to multi-model mean output file
     output_file = directory + 'MMM.nc'
     # Variable names in NetCDF files
-    var_names = ['temp', 'salt', 'u', 'v']
+    var_names = ['temp', 'salt']
     # Corresponding units
-    var_units = ['degC', 'psu', 'm/s', 'm/s']
+    var_units = ['degC', 'psu']
 
     # Read ECCO2 grid
     id = Dataset(ecco2_file, 'r')
@@ -43,12 +43,8 @@ def mmm_ocean_netcdf ():
     out_id.variables['time'].units = 'month'
     out_id.variables['time'][:] = arange(1, 12+1)
 
-    # Get a list of CMIP5 Model objects
-    models = build_model_list()
-    # Build a corresponding list of model names
-    model_names = []
-    for model in models:
-        model_names.append(model.name)
+    # Get a list of CMIP5 model names
+    model_names = build_model_list()
 
     # Loop over variables
     for i in range(len(var_names)):

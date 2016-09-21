@@ -1,13 +1,13 @@
-cmip5_paths.py: Builds an array of Model objects, one for each of the 39 CMIP5
-                models used in Kaitlin's project. Model objects contain
-		information about the model, and most usefully a class function
-		get_directory which returns the directory containing monthly
-		output for the specified variable and experiment.
-		To run: The function build_model_list is designed to be called
-		        by other functions; see for example
-			cmip5_eraint_rms_errors.py. Note that for the class
-			function get_directory to work, you must be running on
-			raijin and be part of the ua6 project.
+cmip5_paths.py: Contains two useful functions: get_directory, which returns the
+                directory containing monthly output for the specified model,
+		variable, and experiment; and build_model_list, which returns
+		a list of all 39 CMIP5 models in this analysis.
+		To run: These functions are both designed to be called by other
+		        functions; see for example cmip5_field.py and
+			cmip5_eraint_rms_errors.py. Note that for get_directory
+			to work, you must be running on raijin and be part of
+			the ua6 project, with "module use ~access/modules"
+			and "module load pythonlib/ARCCSSive" in your .bashrc.
 
 eraint_field.py: Reads ERA-Interim monthly data for the given variable name,
                  between the given start and end years. Returns the monthly
@@ -36,7 +36,9 @@ cmip5_field.py: Reads CMIP5 output for the given model, experiment, and variable
 		        other functions; see for example
 			cmip5_atmos_climatology_netcdf.py. Note that for this
 			function to work, you must be running on raijin and be
-			part of the ua6 project.
+			part of the ua6 project, with
+			"module use ~access/modules" and
+			"module load pythonlib/ARCCSSive" in your .bashrc.
 
 eraint_climatology_netcdf.py: Calculates the ERA-Interim monthly climatology
                               from 1992-2005 inclusive, for 11 atmospheric
@@ -78,11 +80,11 @@ cmip5_atmos_climatology_netcdf.py: For the given CMIP5 model, calculates the
 				"cmip5_atmos_climatology_netcdf('ACCESS1-0')".
 
 cmip5_ocean_climatology_netcdf.py: For the given CMIP5 model, calculates the
-                       monthly climatology from 1992-2005 inclusive for 4 ocean
-		       variables. Interpolates to the ECCO2 grid at the northern
-		       boundary of ROMS and saves to a NetCDF file. Note that to
-		       run this script, you must have previously run
-		       ecco2_climatology_netcdf.py.
+                       monthly climatology from 1992-2005 inclusive for
+		       temperature and salinity. Interpolates to the ECCO2 grid
+		       at the northern boundary of ROMS and saves to a NetCDF
+		       file. Note that to run this script, you must have
+		       previously run ecco2_climatology_netcdf.py.
 		       To run: First edit the variables output_file and
 		               ecco2_file, near the top of the file, to suit
 			       your filesystem. Then make sure that you have
