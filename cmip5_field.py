@@ -2,6 +2,7 @@ from numpy import *
 from netCDF4 import Dataset, num2date, date2num
 from os import listdir
 from scipy.interpolate import interp1d
+from cmip5_paths import *
 
 # Read CMIP5 output for the given model, experiment, and variable name. Return
 # the monthly climatology as well as the grid.
@@ -92,20 +93,19 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
                     depth = None                
 
                 # Read model output, one timestep at a time to save memory
-                for t in range(size(time)):
+                for t in range(size(time)):                
                     if realm == 'atmos':
                         data_tmp = id.variables[var_name][t,:,:]
                     elif realm == 'ocean':
                         data_tmp = id.variables[var_name][t,:,:,:]
                     # Some of the CMIP5 ocean models are not saved as masked
                     # arrays, but rather as regular arrays with the value 0
-                    # at all land points. Catch these with a try-except block
-                    # and convert to masked arrays.
+                    # at all land points. Catch these with a try-except
+                    # block and convert to masked arrays.
                     try:
                         mask = data_tmp.mask
                     except (AttributeError):
                         data_tmp = ma.masked_where(data_tmp==0, data_tmp)
-
                     if data is None:
                         # Set up data array of correct size
                         if realm == 'atmos':

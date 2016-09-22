@@ -15,7 +15,7 @@ def eraint_climatology_netcdf ():
     # Variable names to use for NetCDF file
     var_names_output = ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad']
     # Units of final variables (note there are some conversions in eraint_field)
-    var_units = ['kPa', 'degC', '1', '%', 'm/s', 'm/s', '10^6 kg/m^2/s', '10^6 kg/m^2/s', '10^6 kg/m^2/s', 'W/m^2', 'W/m^2']
+    var_units = ['kPa', 'degC', '1', '%', 'm/s', 'm/s', '10^-6 kg/m^2/s', '10^-6 kg/m^2/s', '10^-6 kg/m^2/s', 'W/m^2', 'W/m^2']
     # Path to output NetCDF file
     output_file = '/short/y99/kaa561/CMIP5_forcing/atmos/ERA-Interim.nc'
 
