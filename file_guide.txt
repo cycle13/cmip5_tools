@@ -211,3 +211,15 @@ cmip5_max_uwind.py: Create two plots: (1) the maximum zonal wind speed between
 			    cmip5_plot.py, the interface will repeat as many
 			    times as you like, and you only have to specify
 			    which parameters have changed since the last plot.
+
+choose_models.py: Builds a list of all CMIP5 models that have the data we need
+                  for the historical RMS error analysis.
+		  To run: Open python or ipython and type
+		          "run choose_models.py".
+
+choose_models_future.py: Builds a list of all CMIP5 models which satisfy
+                         choose_models.py and also have all the data we need
+			 to create RCP 4.5 and 8.5 boundary conditions,
+			 including subdaily winds.
+			 To run: Open python or ipython and type
+			         "run choose_models_future.py".

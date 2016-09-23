@@ -39,10 +39,9 @@ def get_directory (model_name, expt, var_name):
     return dir
 
 
-# Array of model names for the 27 CMIP5 models used in this project.
+# Array of model names for the CMIP5 models used in this project.
 def build_model_list ():
 
-    model_names = ['bcc-csm1-1', 'bcc-csm1-1-m', 'BNU-ESM', 'CanESM2', 'CNRM-CM5', 'ACCESS1-0', 'ACCESS1-3', 'CSIRO-Mk3-6-0', 'inmcm4', 'IPSL-CM5A-LR', 'IPSL-CM5A-MR', 'IPSL-CM5B-LR', 'MIROC-ESM', 'MIROC-ESM-CHEM', 'MIROC5', 'HadGEM2-CC', 'HadGEM2-ES', 'MRI-CGCM3', 'GISS-E2-H', 'GISS-E2-H-CC', 'GISS-E2-R', 'GISS-E2-R-CC', 'NorESM1-M', 'NorESM1-ME', 'GFDL-CM3', 'GFDL-ESM2G', 'GFDL-ESM2M']
+    model_names = ['ACCESS1-0', 'ACCESS1-3', 'bcc-csm1-1', 'bcc-csm1-1-m', 'BNU-ESM', 'CanESM2', 'CNRM-CM5', 'CNRM-CM5-2', 'CSIRO-Mk3-6-0', 'FGOALS-s2', 'GFDL-CM3', 'GFDL-ESM2G', 'GFDL-ESM2M', 'GISS-E2-H-CC', 'GISS-E2-R', 'GISS-E2-R-CC', 'HadCM3', 'HadGEM2-CC', 'HadGEM2-ES', 'inmcm4', 'IPSL-CM5A-LR', 'IPSL-CM5A-MR', 'IPSL-CM5B-LR', 'MIROC-ESM', 'MIROC-ESM-CHEM', 'MIROC4h', 'MIROC5', 'MRI-CGCM3', 'NorESM1-M', 'NorESM1-ME']
 
-    # Alphabetise
-    return sorted(model_names, key=str.lower)
+    return model_names

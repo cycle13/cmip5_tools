@@ -30,7 +30,7 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
     # Figure out whether it is an atmosphere or ocean variable
     if var_name in ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:
         realm = 'atmos'
-    elif var_name in ['thetao', 'so', 'uo', 'vo', 'zos']:
+    elif var_name in ['thetao', 'so']:
         realm = 'ocean'
     else:
         print 'Unknown variable'
@@ -61,6 +61,7 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
             if amin(time_id[:]) < 0:
                 # Missing values here; this occurs for one 1900-1949 file
                 # We can just skip it
+                print 'Warning: missing values in ' + path + file
                 break
             # Convert to datetime objects
             curr_units = time_id.units
