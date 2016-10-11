@@ -153,6 +153,9 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
     # Convert units for evaporation in NorESM1-ME
     if var_name == 'evspsbl' and model == 'NorESM1-ME':
         data = 1e-3*data
+    # Opposite sign for evaporation in FGOALS-s2
+    if var_name == 'evspsbl' and model == 'FGOALS-s2':
+        data = -data
 
     # Conversions if necessary
     if var_name in ['pr', 'prsn', 'evspsbl']:

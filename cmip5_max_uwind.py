@@ -28,9 +28,9 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
     latS = -65
     latN = -30
 
-    # 40 visually distinct (or as visually distinct as possible) colours for
+    # 38 visually distinct (or as visually distinct as possible) colours for
     # plotting, generated using http://phrogz.net/css/distinct-colors.html
-    all_cmip5_colours = [(1,0,0), (0.58,0,0), (1,0.37,0.37), (0.58,0.22,0.22), (0.37,0.14,0.14), (1,0.74,0.74), (0.58,0.43,0.43), (1,0.78,0), (0.37,0.29,0), (0.58,0.5,0.22), (1,0.95,0.74), (0.58,0.55,0.43), (0.43,1,0), (0.16,0.37,0), (0.51,0.79,0.29), (0,0.58,0.2), (0.37,1,0.59), (0.74,1,0.83), (0.43,0.58,0.48), (0.27,0.37,0.31), (0.29,0.73,0.79), (0.14,0.34,0.37), (0.74,0.96,1), (0,0.08,1), (0,0.05,0.58), (0,0.03,0.37), (0.37,0.42,1), (0.22,0.24,0.58), (0.58,0.6,0.79), (0.55,0,0.79), (0.81,0.37,1), (0.47,0.22,0.58), (0.3,0.14,0.37), (0.92,0.74,1), (0.53,0.43,0.58), (0.34,0.27,0.37), (0.58,0,0.3), (1,0.37,0.69), (0.37,0.14,0.26), (1,0.74,0.87)]
+    all_cmip5_colours = [(1,0,0), (0.58,0,0), (1,0.37,0.37), (0.58,0.22,0.22), (0.37,0.14,0.14), (1,0.74,0.74), (0.58,0.43,0.43), (1,0.78,0), (0.37,0.29,0), (0.58,0.5,0.22), (0.43,1,0), (0.16,0.37,0), (0.51,0.79,0.29), (0,0.58,0.2), (0.37,1,0.59), (0.74,1,0.83), (0.43,0.58,0.48), (0.27,0.37,0.31), (0.29,0.73,0.79), (0.14,0.34,0.37), (0.74,0.96,1), (0,0.08,1), (0,0.05,0.58), (0,0.03,0.37), (0.37,0.42,1), (0.22,0.24,0.58), (0.58,0.6,0.79), (0.55,0,0.79), (0.81,0.37,1), (0.47,0.22,0.58), (0.3,0.14,0.37), (0.92,0.74,1), (0.53,0.43,0.58), (0.34,0.27,0.37), (0.58,0,0.3), (1,0.37,0.69), (0.37,0.14,0.26), (1,0.74,0.87)]
     # Figure out how many colours we need, and select them evenly from the list
     num_colours = len(all_cmip5_colours)
     num_models = len(model_names)
@@ -38,6 +38,16 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
     for i in range(num_models):
         index = int(ceil(i*float(num_colours)/num_models))
         cmip5_colours.append(all_cmip5_colours[index])
+
+    # If MMM (multi-model-mean) is in model_names, rearrange so it comes
+    # first and will get (1,0,0) bright red colour
+    if 'MMM' in model_names:
+        mmm_index = model_names.index('MMM')
+        new_order = [mmm_index]
+        for i in range(len(model_names)):
+            if i != mmm_index:
+                new_order.append(i)
+        model_names = [model_names[i] for i in new_order]
 
     # Choose the month indices we are interested in, based on the season
     if season == 'djf':
@@ -67,14 +77,17 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
     lat = lat[j_min:j_max]
 
     # Read ERA-Interim data
-    era_data = id.variables['Uwind'][:,j_min:j_max,:]
+    era_data_t = id.variables['Uwind'][:,j_min:j_max,:]
     id.close()
+    # Take time average
+    era_data = None
     for month in range(12):
-        # Mask out the months we don't care about
-        if month+1 not in months:
-            era_data[month,:,:] = ma.masked
-    # Take time average (this will automatically exclude the masked months)
-    era_data = mean(era_data, axis=0)
+        if month+1 in months:
+            if era_data is None:
+                era_data = era_data_t[month,:,:]
+            else:
+                era_data += era_data_t[month,:,:]
+    era_data /= len(months)
     # Find the maximum along the latitude axis for each longitude point
     era_max = amax(era_data, axis=0)
     # Find the latitude indices of these maximum values
@@ -95,11 +108,11 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
         # Read model data (note it has already been interpolated to ERA-Interim
         # grid)
         id = Dataset(directory + model_name + '.nc', 'r')
-        model_data = id.variables['Uwind'][:,j_min:j_max,:]
+        model_data_t = id.variables['Uwind'][:,j_min:j_max,:]
         id.close()
         # Check for missing data
         try:
-            mask = model_data.mask
+            mask = model_data_t.mask
         except(AttributeError):
             # There is no mask
             mask = False
@@ -107,13 +120,15 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
             # Everything is masked, so the variable is missing
             pass
         else:
+            # Take time average
+            model_data = None            
             for month in range(12):
-                # Mask out the months we don't care about
-                if month+1 not in months:
-                    model_data[month,:,:] = ma.masked
-            # Take time average (this will automatically exclude the masked
-            # months)
-            model_data = mean(model_data, axis=0)
+                if month+1 in months:
+                    if model_data is None:
+                        model_data = model_data_t[month,:,:]
+                    else:
+                        model_data += model_data_t[month,:,:]
+            model_data /= len(months)
             # Find the maximum along the latitude axis for each longitude point
             model_max = amax(model_data, axis=0)
             # Find the latitude indices of these maximum values
@@ -122,14 +137,14 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
             model_loc = zeros(size(model_index))
             for i in range(size(model_index)):
                 model_loc[i] = lat[model_index[i]]
-            # Use a thicker line for the multi-model mean
-            if model_name == 'MMM':
-                lw = 3
-            else:
-                lw = 2
             # Add to plots
-            ax1.plot(lon, model_max, label=model_name, color=cmip5_colours[j], linewidth=lw)
-            ax2.plot(lon, model_loc, label=model_name, color=cmip5_colours[j], linewidth=lw)
+            if model_name == 'MMM':
+                # Put multi-model mean second from top
+                ax1.plot(lon, model_max, label=model_name, color=cmip5_colours[j], linewidth=2, zorder=num_models)
+                ax2.plot(lon, model_loc, label=model_name, color=cmip5_colours[j], linewidth=2, zorder=num_models)
+            else:
+                ax1.plot(lon, model_max, label=model_name, color=cmip5_colours[j], linewidth=2)
+                ax2.plot(lon, model_loc, label=model_name, color=cmip5_colours[j], linewidth=2)
 
     # Configure first plot
     ax1.set_title('Maximum zonal wind')

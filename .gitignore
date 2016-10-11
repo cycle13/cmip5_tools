@@ -1,0 +1,6 @@
+*.pyc
+*.png
+*.log
+models_to_use
+cmip5/
+cmip5_old/

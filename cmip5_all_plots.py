@@ -19,6 +19,7 @@ def cmip5_all_plots (season):
     # Make a list of all possible model names
     model_names = build_model_list()
     model_names.append('MMM')
+    #model_names = ['ACCESS1-3', 'HadGEM2-ES', 'GFDL-ESM2G', 'MMM']
 
     # Call cmip5_plot for each variable
     for i in range(len(var_names)):

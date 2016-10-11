@@ -109,7 +109,7 @@ def cmip5_ecco2_rms_errors ():
         # Calculate relative error as (E-E')/E where E is the RMS error for each
         # model, and E' is the median error across all models for this variable
         median_error = median(rms_errors[i,:-1])
-        for j in range(len(models)+1):
+        for j in range(len(model_names)):
             relative_errors[i,j] = (rms_errors[i,j] - median_error)/rms_errors[i,j]
 
     # Make the portrait plot

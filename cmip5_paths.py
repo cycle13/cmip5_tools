@@ -35,6 +35,10 @@ def get_directory (model_name, expt, var_name):
     # Special cases
     if expt=='historical' and var_name=='clt' and model_name=='bcc-csm1-1-m':
         dir = '/g/data1/ua6/unofficial-ESG-replica/tmp/tree/esgf2.dkrz.de/thredds/fileServer/cmip5/output1/BCC/bcc-csm1-1-m/historical/mon/atmos/Amon/r1i1p1/v20120709/clt/'
+    if expt=='historical' and var_name=='clt' and model_name=='GISS-E2-H-CC':
+        dir = '/g/data1/ua6/NCI_replica_tmp/LLNL/xfer-globusOnline/cmip5_css02/data/cmip5/output1/NASA-GISS/GISS-E2-H-CC/historical/mon/atmos/Amon/r1i1p1/clt/1/'
+    if expt=='historical' and var_name=='clt' and model_name=='GISS-E2-R-CC':
+        dir = '/g/data1/ua6/NCI_replica_tmp/LLNL/xfer-globusOnline/cmip5_css02/data/cmip5/output1/NASA-GISS/GISS-E2-R-CC/historical/mon/atmos/Amon/r1i1p1/clt/1/'
 
     return dir
 
