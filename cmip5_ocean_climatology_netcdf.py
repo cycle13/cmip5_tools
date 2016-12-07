@@ -30,16 +30,16 @@ def cmip5_ocean_climatology_netcdf (model_name):
     # Northern boundary of ROMS
     nbdry = -30.0
     # CMIP5 variable names
-    var_names = ['thetao', 'so']
+    var_names = ['thetao', 'so', 'vo']
     # Variable names to use in NetCDF file
-    var_names_output = ['temp', 'salt']
+    var_names_output = ['temp', 'salt', 'v']
     # Units of final variables (note some conversions in cmip5_field)
-    var_units = ['degC', 'psu']
+    var_units = ['degC', 'psu', 'm/s']
     # Path to output NetCDF file
-    output_file = '/short/y99/kaa561/CMIP5_forcing/ocean/' + model_name + '.nc'
+    output_file = '/short/y99/kaa561/CMIP5_forcing/ocean/climatology/' + model_name + '.nc'
     # Path to corresponding ECCO2 file (created using
     # ecco2_climatology_netcdf.py)
-    ecco2_file = '/short/y99/kaa561/CMIP5_forcing/ocean/ECCO2.nc'
+    ecco2_file = '/short/y99/kaa561/CMIP5_forcing/ocean/climatology/ECCO2.nc'
 
     # Read ECCO2 grid
     id = Dataset(ecco2_file, 'r')

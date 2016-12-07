@@ -1,0 +1,32 @@
+ACCESS1-3
+
+Variable	Historical	RCP4.5		RCP8.5
+ps		3hr, 6hr, mon	3hr, 6hr, mon	3hr, 6hr, mon
+tas		3hr, mon  	3hr, day, mon	3hr, day, mon
+huss		3hr, day, mon	3hr, day, mon	3hr, day, mon
+clt		3hr, day, mon	3hr, day, mon	3hr, day, mon
+uas		3hr, day, mon	3hr, day, mon	3hr, day, mon
+vas		3hr, day, mon	3hr, day, mon	3hr, day, mon
+pr		3hr, day, mon	3hr, day, mon	3hr, day, mon
+prsn		3hr, day, mon	3hr, day, mon	3hr, day, mon
+evspsbl		mon  	  	mon  	  	mon
+rsds		3hr, day, mon	3hr, day, mon	3hr, day, mon
+rlds		3hr, day, mon	3hr, day, mon	3hr, day, mon
+
+BUT 3hr fields only start in 2026. Similarly for ACCESS1-0.
+
+For evaporation: has 3-hourly hfls (latent heat flux), which can be converted to
+evaporation by dividing by latent heat of vaporisation (function of SST, daily output available, not much of a diurnal cycle so should be okay. Compare this to monthly evspsbl to make sure it's reasonable.)
+
+GFDL-ESM2G: should be available but not all on raijin
+HadGEM2-ES: should be available (except for ps, use monthly?) but not all on raijin
+
+RCP_6h = climatology_mon (ERA-Interim) + RCP_mon (CMIP5) - climatology_mon (CMIP5) + RCP_6h (CMIP5) - RCP_mon (CMIP5)
+
+i.e. climatology + monthly anomalies from climatology + subdaily anomalies from monthly, but swap out climatology with obs.
+
+Option 2: Use submonthly variability from ERA-Interim:
+
+RCP_6h = climatology_mon (ERA-Interim) + RCP_mon (CMIP5) - climatology_mon (CMIP5) + repeating 14-year subdaily (ERA-Interim) - climatology_mon (ERA-Interim)
+
+i.e. monthly anomalies from CMIP5. could do multi-model mean as well as specific model (ACCESS1-3).

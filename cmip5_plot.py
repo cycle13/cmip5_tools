@@ -31,52 +31,52 @@ def cmip5_plot (var, season, model_names, save=False, fig_name=None):
     # and "ocean/"
     directory = '/short/y99/kaa561/CMIP5_forcing/'
     # Path to ROMS grid file
-    roms_grid = '/short/m68/kaa561/ROMS-CICE-MCT/apps/common/grid/circ30S_quarterdegree_10m.nc'
+    roms_grid = '/short/m68/kaa561/ROMS-CICE-MCT/apps/common/grid/circ30S_quarterdegree_good.nc'
 
     # Figure out whether this is an atmosphere or ocean variable
-    if var in ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad']:
+    if var in ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10', 'tp', 'sf', 'e', 'ssrd', 'strd']:
         realm = 'atmos'
-    elif var in ['temp', 'salt']:
+    elif var in ['temp', 'salt', 'v']:
         realm = 'ocean'
     else:
         print 'Unknown variable'
         return None
-    directory = directory + realm + '/'
+    directory = directory + realm + '/climatology/'
 
     # Set the plot title and units
-    if var == 'Pair':
+    if var == 'sp':
         plot_title = 'Surface Pressure'
-        plot_units = 'kPa'
-    elif var == 'Tair':
+        plot_units = 'Pa'
+    elif var == 't2m':
         plot_title = 'Surface Air Temperature'
-        plot_units = r'$^{\circ}$C'
-    elif var == 'Hair':
-        plot_title = 'Surface Specific Humidity'
-        plot_units = '1'
-    elif var == 'cloud':
+        plot_units = 'K'
+    elif var == 'd2m':
+        plot_title = 'Surface Dew Point Temperature'
+        plot_units = 'K'
+    elif var == 'tcc':
         plot_title = 'Total Cloud Cover'
-        plot_units = '%'
-    elif var == 'Uwind':
+        plot_units = 'fraction'
+    elif var == 'u10':
         plot_title = 'Eastward Wind Velocity'
         plot_units = 'm/s'
-    elif var == 'Vwind':
+    elif var == 'v10':
         plot_title = 'Northward Wind Velocity'
         plot_units = 'm/s'
-    elif var == 'precip':
+    elif var == 'tp':
         plot_title = 'Total Precipitation'
-        plot_units = r'10$^6$ kg m$^{-2}$ s$^{-1}$'
-    elif var == 'snow':
+        plot_units = 'm/12h'
+    elif var == 'sf':
         plot_title = 'Snowfall'
-        plot_units = r'10$^6$ kg m$^{-2}$ s$^{-1}$'
-    elif var == 'evap':
+        plot_units = 'm/12h'
+    elif var == 'e':
         plot_title = 'Evaporation'
-        plot_units = r'10$^6$ kg m$^{-2}$ s$^{-1}$'
-    elif var == 'swrad':
+        plot_units = 'm/12h'
+    elif var == 'ssrd':
         plot_title = 'Downgoing Shortwave Radiation'
-        plot_units = r'W m$^{-2}$'
-    elif var == 'lwrad':
+        plot_units = r'J/m$^2$/12h'
+    elif var == 'strd':
         plot_title = 'Downgoing Longwave Radiation'
-        plot_units = r'W m$^{-2}$'
+        plot_units = r'J/m$^2$/12h'
     elif var == 'temp':
         plot_title = 'Temperature'
         plot_units = r'$^{\circ}$C'

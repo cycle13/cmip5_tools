@@ -9,15 +9,15 @@ def mmm_atmos_netcdf ():
     # Directory containing CMIP5 NetCDF climatology atmosphere files,
     # interpolated to the ERA-Interim grid (created using
     # cmip5_atmos_climatology_netcdf.py)
-    directory = '/short/y99/kaa561/CMIP5_forcing/atmos/'
+    directory = '/short/y99/kaa561/CMIP5_forcing/atmos/climatology/'
     # Path to ERA-Interim file (created using eraint_climatology_netcdf.py)
     eraint_file = directory + 'ERA-Interim.nc'
     # Path to multi-model mean output file
     output_file = directory + 'MMM.nc'
     # Variable names in NetCDF files
-    var_names = ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad']
+    var_names = ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10', 'tp', 'sf', 'e', 'ssrd', 'strd']
     # Corresponding units
-    var_units = ['kPa', 'degC', '1', '%', 'm/s', 'm/s', '10^6 kg/m^2/s', '10^6 kg/m^2/s', '10^6 kg/m^2/s', 'W/m^2', 'W/m^2']
+    var_units = ['Pa', 'K', 'K', 'fraction', 'm/s', 'm/s', 'm/12h', 'm/12h', 'm/12h', 'J/m^2/12h', 'J/m^2/12h']
 
     # Read ERA-Interim grid
     id = Dataset(eraint_file, 'r')

@@ -18,11 +18,11 @@ def cmip5_eraint_rms_errors():
 
     # Path to directory containing climatology NetCDF files (created by
     # eraint_climatology_netcdf.py and cmip5_atmos_climatology_netcdf.py)
-    directory = '/short/y99/kaa561/CMIP5_forcing/atmos/'
+    directory = '/short/y99/kaa561/CMIP5_forcing/atmos/climatology/'
     # Variable names in NetCDF files
-    var_names = ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad']
+    var_names = ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10', 'tp', 'sf', 'e', 'ssrd', 'strd']
     # Path to ROMS grid
-    roms_grid = '/short/m68/kaa561/ROMS-CICE-MCT/apps/common/grid/circ30S_quarterdegree_10m.nc'
+    roms_grid = '/short/m68/kaa561/ROMS-CICE-MCT/apps/common/grid/circ30S_quarterdegree_good.nc'
     # Radius of the Earth in metres
     r = 6.371e6
     # Degrees to radians conversion factor
@@ -123,7 +123,7 @@ def cmip5_eraint_rms_errors():
             relative_errors[i,j] = (rms_errors[i,j] - median_error)/rms_errors[i,j]
 
     # Make the portrait plot
-    fig = figure(figsize=(8,20))
+    fig = figure(figsize=(8,12))
     ax = fig.add_subplot(111)
     img = ax.pcolormesh(transpose(relative_errors), vmin=-0.8, vmax=0.8, cmap='RdBu_r')
 

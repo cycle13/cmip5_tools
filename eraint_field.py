@@ -12,25 +12,15 @@ from netCDF4 import Dataset
 #                        with no climatological averaging.
 # Output:
 # era_data = 3D array of ERA-Interim data, with dimension month x latitude x
-#            longitude, possibly with units converted to be more comparable
-#            to CMIP5 models
+#            longitude
 # era_lon = 1D array containing longitude values
 # era_lat = 1D array containing latitude values
 def eraint_field (var_name, start_year, end_year):
 
     # Directory where ERA-Interim monthly averaged data is stored
-    era_dir = '/short/y99/kaa561/FESOM/ERA_Interim_monthly/'
+    era_dir = '/short/y99/kaa561/CMIP5_forcing/atmos/climatology/ERA_Interim_monthly/'
     # String that ERA-Interim files end with
     era_tail = '_monthly_orig.nc'
-
-    # Latent heat of vapourisation, J/kg
-    Lv = 2.5e6
-    # Ideal gas constant for water vapour, J/K/kg
-    Rv = 461.5
-    # Density of water, kg/m^3
-    rho_w = 1e3
-    # Conversion from K to C
-    degKtoC = -273.15
 
     # Read ERA-Interim latitude and longitude
     id = Dataset(era_dir + 'AN_' + str(start_year) + era_tail, 'r')
@@ -56,34 +46,6 @@ def eraint_field (var_name, start_year, end_year):
         # Read data
         id = Dataset(era_file, 'r')
         data = id.variables[var_name][:,:,:]
-
-        # Perform conversions if necessary
-        if var_name == 'sp':
-            # Convert pressure from Pa to kPa
-            data = 1e-3*data
-        elif var_name == 't2m':
-            # Convert temperature from K to C
-            data = data + degKtoC
-        elif var_name == 'd2m':
-            # Calculate specific humidity from dewpoint temperature
-            # and surface pressure
-            d2m = data
-            sp = id.variables['sp'][:,:,:]
-            # Intermediate step to calculate vapour pressure
-            e = 611*exp(Lv/Rv*(1/273.0 - 1/d2m))
-            data = 0.622*e/(sp - 0.378*e)
-        elif var_name == 'tcc':
-            # Convert total cloud cover from fraction to percent
-            data = data*100
-        elif var_name in ['tp', 'sf', 'e']:
-            # Convert precip/snowfall/evap from kg/m^2/s to 1e-6 kg/m^2/s
-            data = 1e6*data*rho_w/(12*60*60)
-            if var_name == 'e':
-                # ERA-Interim defines evaporation as negative; fix this
-                data = -1*data
-        elif var_name in ['ssrd', 'strd']:
-            # Convert from J/m^2, integrated over 12 hours, to W/m^2
-            data = data/(12*60*60)
         id.close()
 
         # Add to master array

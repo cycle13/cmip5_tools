@@ -23,7 +23,7 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
 
     # Directory where the NetCDF climatology files, creating using the scripts
     # listed above, are stored
-    directory = '/short/y99/kaa561/CMIP5_forcing/atmos/'
+    directory = '/short/y99/kaa561/CMIP5_forcing/atmos/climatology/'
     # Bounds on latitude to search for the maximum uwind between
     latS = -65
     latN = -30
@@ -77,7 +77,7 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
     lat = lat[j_min:j_max]
 
     # Read ERA-Interim data
-    era_data_t = id.variables['Uwind'][:,j_min:j_max,:]
+    era_data_t = id.variables['u10'][:,j_min:j_max,:]
     id.close()
     # Take time average
     era_data = None
@@ -108,7 +108,7 @@ def cmip5_max_uwind (model_names, season, save=False, fig_names=None):
         # Read model data (note it has already been interpolated to ERA-Interim
         # grid)
         id = Dataset(directory + model_name + '.nc', 'r')
-        model_data_t = id.variables['Uwind'][:,j_min:j_max,:]
+        model_data_t = id.variables['u10'][:,j_min:j_max,:]
         id.close()
         # Check for missing data
         try:
@@ -209,8 +209,8 @@ if __name__ == "__main__":
     if action == 's':
         save = True
         # Get file names for both figures
-        fig_name1 = raw_input("File name for first figure (maximum Uwind): ")
-        fig_name2 = raw_input("File name for second figure (latitude of maximum Uwind): ")
+        fig_name1 = raw_input("File name for first figure (maximum u10): ")
+        fig_name2 = raw_input("File name for second figure (latitude of maximum u10): ")
         fig_names = [fig_name1, fig_name2]        
     elif action == 'd':
         save = False
@@ -256,8 +256,8 @@ if __name__ == "__main__":
                         save = not save
             if save:
                 # Get new figure names
-                fig_name1 = raw_input("File name for first figure (maximum Uwind): ")
-                fig_name2 = raw_input("File name for second figure (latitude of maximum Uwind): ")
+                fig_name1 = raw_input("File name for first figure (maximum u10): ")
+                fig_name2 = raw_input("File name for second figure (latitude of maximum u10): ")
                 fig_names = [fig_name1, fig_name2]
             # Make the plot
             cmip5_max_uwind(model_names, season, save, fig_names)

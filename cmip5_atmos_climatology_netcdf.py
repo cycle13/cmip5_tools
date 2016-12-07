@@ -1,11 +1,10 @@
 from cmip5_paths import *
 from cmip5_field import *
-from eraint_field import *
+from interp_model2era import *
 from numpy import *
 from netCDF4 import Dataset
-from scipy.interpolate import RegularGridInterpolator
 
-# NB for raijin users: RegularGridInterpolator needs python/2.7.6 but the
+# NB for raijin users: interp_model2era needs python/2.7.6 but the
 # default is 2.7.3. Before running this script, switch them as follows:
 # module unload python/2.7.3
 # module unload python/2.7.3-matplotlib
@@ -28,14 +27,20 @@ def cmip5_atmos_climatology_netcdf (model_name):
     # CMIP5 variable names
     var_names = ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']
     # Variable names to use in NetCDF file
-    var_names_output = ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad']
-    # Units of final variables (note some conversions in cmip5_field)
-    var_units = ['kPa', 'degC', '1', '%', 'm/s', 'm/s', '10^-6 kg/m^2/s', '10^-6 kg/m^2/s', '10^-6 kg/m^2/s', 'W/m^2', 'W/m^2']
+    var_names_output = ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10', 'tp', 'sf', 'e', 'ssrd', 'strd']
+    # Units of final variables
+    var_units = ['Pa', 'K', 'K', 'fraction', 'm/s', 'm/s', 'm/12h', 'm/12h', 'm/12h', 'J/m^2/12h', 'J/m^2/12h']
     # Path to output NetCDF file
-    output_file = '/short/y99/kaa561/CMIP5_forcing/atmos/' + model_name + '.nc'
+    output_file = '/short/y99/kaa561/CMIP5_forcing/atmos/climatology/' + model_name + '.nc'
     # Path to corresponding ERA-Interim file (created using
     # eraint_climatology_netcdf.py)
-    eraint_file = '/short/y99/kaa561/CMIP5_forcing/atmos/ERA-Interim.nc'
+    eraint_file = '/short/y99/kaa561/CMIP5_forcing/atmos/climatology/ERA-Interim.nc'
+    # Latent heat of vapourisation, J/kg
+    Lv = 2.5e6
+    # Ideal gas constant for water vapour, J/K/kg
+    Rv = 461.5
+    # Density of water, kg/m^3
+    rho_w = 1e3
 
     # Read ERA-Interim grid
     id = Dataset(eraint_file, 'r')
@@ -59,6 +64,30 @@ def cmip5_atmos_climatology_netcdf (model_name):
         else:
             # No data (missing variable in CMIP5 archive)
             model_data_interp[:,:,:] = ma.masked
+
+        # Conversions if necessary
+        if var == 'huss':
+            # Convert from surface specific humidity to dew point
+            huss = model_data_interp[:,:,:]
+            # First read surface pressure in Pa
+            sp = id.variables['sp'][:,:,:]
+            # Calculate vapour pressure in Pa
+            vap_p = huss*sp/(0.622 + 0.378*huss)
+            # Now calculate dew point in K
+            model_data_interp = (1/273.0 - Rv/Lv*log(vap_p/611))**(-1)
+        elif var == 'clt':
+            # Convert total cloud cover from percent to fraction
+            model_data_interp *= 0.01
+        elif var in ['pr', 'prsn', 'evspsbl']:
+            # Convert precip/snowfall/evap from kg/m^2/s to m/12h
+            model_data_interp *= 12*60*60/rho_w
+            if var == 'evspsbl':
+                # Switch sign of evaporation
+                model_data_interp *= -1
+        elif var in ['rsds', 'rlds']:
+            # Convert radiation from W/m^2 to J/m^2/12h
+            model_data_interp *= 12*60*60        
+            
         if i == 0:
             # Set up NetCDF file on the first iteration
             print 'Setting up ' + output_file
@@ -82,82 +111,6 @@ def cmip5_atmos_climatology_netcdf (model_name):
         id.variables[var_names_output[i]].units = var_units[i]
         id.variables[var_names_output[i]][:,:,:] = model_data_interp
     id.close()
-
-
-# Interpolate a given CMIP5 field to the ERA-Interim grid.
-# Input:
-# model_data = 2D array (size mxn) of model data for the given variable
-# model_lon = 1D array (length n) of longitude for this model
-# model_lat = 1D array (length m) of latitude for this model
-# era_lon = 1D array (length q) of longitude on the ERA-Interim grid
-# era_lat = 1D array (length p) of latitude on the ERA-Interim grid
-# Output:
-# data_interp = 2D array (size pxq) of model data interpolated to the
-#               ERA-Interim grid 
-def interp_model2era(model_data, model_lon, model_lat, era_lon, era_lat):
-
-    # Make sure the model's longitude goes from 0 to 360, not -180 to 180
-    index = model_lon < 0
-    model_lon[index] = model_lon[index] + 360
-
-    # CMIP5 model axes don't wrap around; there is a gap between almost-180W
-    # and almost-180E (these are 0 to 360 but you get the idea) and depending
-    # on the grid, we may need to interpolate in this gap.
-    # So copy the last longitude value (mod 360) to the beginning, and the
-    # first longitude value (mod 360) to the end.
-    model_lon_wrap = zeros(size(model_lon)+2)
-    model_lon_wrap[0] = model_lon[-1] - 360
-    model_lon_wrap[1:-1] = model_lon
-    model_lon_wrap[-1] = model_lon[0] + 360
-    model_lon = model_lon_wrap
-    # Copy the westernmost and easternmost data points to match
-    model_data_wrap = ma.array(zeros((size(model_lat), size(model_lon))))
-    model_data_wrap[:,1:-1] = model_data
-    model_data_wrap[:,0] = model_data[:,-1]
-    model_data_wrap[:,-1] = model_data[:,0]
-    model_data = model_data_wrap
-
-    if amin(model_lat) > amin(era_lat):
-        # Add a point at 90S
-        model_lat_new = zeros(size(model_lat)+1)
-        model_data_new = ma.array(zeros((size(model_lat_new), size(model_lon))))
-        if model_lat[0] > model_lat[1]:
-            model_lat_new[0:-1] = model_lat
-            model_lat_new[-1] = -90.0
-            model_data_new[0:-1,:] = model_data
-            model_data_new[-1,:] = model_data[-1,:]
-        elif model_lat[0] < model_lat[1]:
-            model_lat_new[1:] = model_lat
-            model_lat_new[0] = -90.0
-            model_data_new[1:,:] = model_data
-            model_data_new[0,:] = model_data[0,:]
-        model_lat = model_lat_new
-        model_data = model_data_new
-    if amax(model_lat) < amax(era_lat):
-        # Add a point at 90N
-        model_lat_new = zeros(size(model_lat)+1)
-        model_data_new = ma.array(zeros((size(model_lat_new), size(model_lon))))
-        if model_lat[0] > model_lat[1]:
-            model_lat_new[1:] = model_lat
-            model_lat_new[0] = 90.0
-            model_data_new[1:,:] = model_data
-            model_data_new[0,:] = model_data[0,:]
-        elif model_lat[0] < model_lat[1]:
-            model_lat_new[0:-1] = model_lat
-            model_lat_new[-1] = 90.0
-            model_data_new[0:-1,:] = model_data
-            model_data_new[-1,:] = model_data[-1,:]
-        model_lat = model_lat_new
-        model_data = model_data_new
-
-    # Get 2D mesh of ERA-Interim lat and lon
-    era_lon_2d, era_lat_2d = meshgrid(era_lon, era_lat)
-    # Build an interpolation function for model_data
-    interp_function = RegularGridInterpolator((model_lat, model_lon), model_data)
-    # Call it for the ERA-Interim grid
-    data_interp = interp_function((era_lat_2d, era_lon_2d))
-
-    return data_interp
 
 
 # Command-line interface

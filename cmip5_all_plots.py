@@ -14,7 +14,7 @@ from cmip5_plot import *
 def cmip5_all_plots (season):
 
     # All possible variable names
-    var_names = ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad', 'temp', 'salt']
+    var_names = ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10', 'tp', 'sf', 'e', 'ssrd', 'strd'] #, 'temp', 'salt', 'v']
 
     # Make a list of all possible model names
     model_names = build_model_list()

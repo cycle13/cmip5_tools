@@ -17,7 +17,7 @@ def cmip5_ecco2_rms_errors ():
 
     # Path to directory containing climatolgoy NetCDF files (created by
     # ecco2_climatology_netcdf.py and cmip5_ocean_climatology_netcdf.py)
-    directory = '/short/y99/kaa561/CMIP5_forcing/ocean/'
+    directory = '/short/y99/kaa561/CMIP5_forcing/ocean/climatology/'
     # Variable names in NetCDF files
     var_names = ['temp', 'salt']
     # Radius of the Earth in metres

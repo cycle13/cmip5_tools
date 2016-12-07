@@ -15,7 +15,7 @@ def get_directory (model_name, expt, var_name):
     # Figure out whether it is an atmosphere or ocean variable
     if var_name in ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:
         realm = 'Amon'
-    elif var_name in ['thetao', 'so']:
+    elif var_name in ['thetao', 'so', 'vo']:
         realm = 'Omon'
     else:
         print 'Unknown variable'
@@ -39,6 +39,14 @@ def get_directory (model_name, expt, var_name):
         dir = '/g/data1/ua6/NCI_replica_tmp/LLNL/xfer-globusOnline/cmip5_css02/data/cmip5/output1/NASA-GISS/GISS-E2-H-CC/historical/mon/atmos/Amon/r1i1p1/clt/1/'
     if expt=='historical' and var_name=='clt' and model_name=='GISS-E2-R-CC':
         dir = '/g/data1/ua6/NCI_replica_tmp/LLNL/xfer-globusOnline/cmip5_css02/data/cmip5/output1/NASA-GISS/GISS-E2-R-CC/historical/mon/atmos/Amon/r1i1p1/clt/1/'
+    if expt=='historical' and realm=='Amon' and model_name=='NorESM1-M':
+        dir = dir.replace('latest','v20110427')
+    if expt=='rcp45' and realm=='Amon' and model_name=='IPSL-CM5A-MR':
+        dir = dir.replace('latest','v20111119')
+    if expt=='rcp85' and realm=='Amon' and model_name=='HadGEM2-CC':
+        dir = dir.replace('latest','v20111201')
+    if expt=='rcp85' and realm=='Amon' and model_name=='GFDL-ESM2M':
+        dir = dir.replace('latest','v20110601')
 
     return dir
 
@@ -46,6 +54,6 @@ def get_directory (model_name, expt, var_name):
 # Array of model names for the CMIP5 models used in this project.
 def build_model_list ():
 
-    model_names = ['ACCESS1-0', 'ACCESS1-3', 'bcc-csm1-1', 'bcc-csm1-1-m', 'BNU-ESM', 'CanESM2', 'CNRM-CM5', 'CNRM-CM5-2', 'CSIRO-Mk3-6-0', 'FGOALS-s2', 'GFDL-CM3', 'GFDL-ESM2G', 'GFDL-ESM2M', 'GISS-E2-H-CC', 'GISS-E2-R', 'GISS-E2-R-CC', 'HadCM3', 'HadGEM2-CC', 'HadGEM2-ES', 'inmcm4', 'IPSL-CM5A-LR', 'IPSL-CM5A-MR', 'IPSL-CM5B-LR', 'MIROC-ESM', 'MIROC-ESM-CHEM', 'MIROC4h', 'MIROC5', 'MRI-CGCM3', 'NorESM1-M', 'NorESM1-ME']
+    model_names = ['ACCESS1-0', 'ACCESS1-3', 'BNU-ESM', 'CNRM-CM5', 'CSIRO-Mk3-6-0', 'GFDL-CM3', 'GFDL-ESM2G', 'GFDL-ESM2M', 'GISS-E2-H-CC', 'GISS-E2-R', 'GISS-E2-R-CC', 'HadGEM2-CC', 'IPSL-CM5A-LR', 'IPSL-CM5B-LR', 'MIROC-ESM', 'MIROC-ESM-CHEM', 'MIROC5', 'MRI-CGCM3', 'NorESM1-M']
 
     return model_names

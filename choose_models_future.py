@@ -11,7 +11,7 @@ def choose_models_future ():
 
     cmip5 = CMIP5.connect()
 
-    var_names = ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds', 'thetao', 'so']
+    var_names = ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds', 'thetao', 'so', 'vo']
 
     # Loop over models and find out which ones have all the data
     good_models = []
@@ -20,14 +20,10 @@ def choose_models_future ():
         # Loop over RCPs
         for expt in ['rcp45', 'rcp85']:
             # Loop over variables
-            for var in var_names:
-                # Subdaily winds (we need 6-hourly but they come in 3-hourly or
-                # at most daily), monthly averaged everything else
-                if var in ['uas', 'vas']:
-                    realm = '3hr'                
-                elif var in ['ps', 'tas', 'huss', 'clt', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:
+            for var in var_names:               
+                if var in ['ps', 'tas', 'uas', 'vas','huss', 'clt', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:
                     realm = 'Amon'
-                elif var in ['thetao', 'so']:
+                elif var in ['thetao', 'so', 'vo']:
                     realm = 'Omon'
                 else:
                     print 'Unknown variable'
@@ -58,11 +54,9 @@ def choose_models_future ():
         keep = True
         for expt in ['rcp45', 'rcp85']:
             for var in var_names:
-                if var in ['uas', 'vas']:
-                    realm = '3hr'
-                elif var in ['ps', 'tas', 'huss', 'clt', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:
+                if var in ['ps', 'tas', 'uas', 'vas', 'huss', 'clt', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:
                     realm = 'Amon'
-                elif var in ['thetao', 'so']:
+                elif var in ['thetao', 'so', 'vo']:
                     realm = 'Omon'
                 else:
                     print 'Unknown variable'

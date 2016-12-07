@@ -17,7 +17,7 @@ def ecco2_climatology_netcdf ():
     # Units of final variables (note there are some conversions in ecco2_field)
     var_units = ['degC', 'psu']
     # Path to output NetCDF file
-    output_file = '/short/y99/kaa561/CMIP5_forcing/ocean/ECCO2.nc'
+    output_file = '/short/y99/kaa561/CMIP5_forcing/ocean/climatology/ECCO2.nc'
 
     # Loop over variables
     for i in range(len(var_names)):

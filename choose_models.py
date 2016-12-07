@@ -11,7 +11,7 @@ def choose_models ():
     good_models = []
 
     # Variables we care about
-    var_names = ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds', 'thetao', 'so']
+    var_names = ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds', 'thetao', 'so', 'vo']
 
     # Loop over models and find out which ones have all the data
     for model_name in all_models:
@@ -21,7 +21,7 @@ def choose_models ():
             # Monthly averaged variables
             if var in ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:
                 realm = 'Amon'
-            elif var in ['thetao', 'so']:
+            elif var in ['thetao', 'so', 'vo']:
                 realm = 'Omon'
             else:
                 print 'Unknown variable'

@@ -9,7 +9,7 @@ def mmm_ocean_netcdf ():
     # Directory containing CMIP5 NetCDF climatology ocean files, interpolated
     # to the ECCO2 grid at the northern boundary of ROMS (created using
     # cmip5_ocean_climatology_netcdf.py)
-    directory = '/short/y99/kaa561/CMIP5_forcing/ocean/'
+    directory = '/short/y99/kaa561/CMIP5_forcing/ocean/climatology/'
     # Path to ECCO2 file (created using cmip5_ocean_climatology_netcdf.py)
     ecco2_file = directory + 'ECCO2.nc'
     # Path to multi-model mean output file

@@ -2,10 +2,11 @@ from numpy import *
 from netCDF4 import Dataset, num2date, date2num
 from os import listdir
 from scipy.interpolate import interp1d
+from datetime import datetime
 from cmip5_paths import *
 
 # Read CMIP5 output for the given model, experiment, and variable name. Return
-# the monthly climatology as well as the grid.
+# the monthly climatology over the given years as well as the grid.
 # Input:
 # model = name of model (must match list in cmip5_paths.py)
 # expt = string containing name of experiment, eg 'historical'
@@ -30,7 +31,7 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
     # Figure out whether it is an atmosphere or ocean variable
     if var_name in ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:
         realm = 'atmos'
-    elif var_name in ['thetao', 'so']:
+    elif var_name in ['thetao', 'so', 'vo']:
         realm = 'ocean'
     else:
         print 'Unknown variable'
@@ -50,18 +51,36 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
     num_months = zeros(12)
 
     # Loop over all files in this directory
+    file_list = []
     for file in listdir(path):
+        # IPSL models have a few different simulations lumped together for ps
+        if model in ['IPSL-CM5A-MR', 'IPSL-CM5B-LR'] and var_name == 'ps' and 'Amon' not in file:
+            pass
+        elif model == 'IPSL-CM5A-LR' and expt == 'rcp45' and var_name == 'ps' and 'Amon' not in file:
+            pass
+        else:
+            file_list.append(path + file)        
+    if model == 'HadGEM2-CC' and expt == 'historical':
+        # The Hadley Centre models randomly skip the last month of the
+        # historical simulation and store it with the future simulations
+        # instead. Grab it from RCP4.5.
+        path2 = get_directory(model, 'rcp45', var_name)
+        for file in listdir(path2):
+            file_list.append(path2 + file)
+
+    for file in file_list:
 
         # Check every netCDF file
         if file.endswith('.nc'):
+            print file
 
             # Read the time values
-            id = Dataset(path + file, 'r')
+            id = Dataset(file, 'r')
             time_id = id.variables['time']
             if amin(time_id[:]) < 0:
                 # Missing values here; this occurs for one 1900-1949 file
                 # We can just skip it
-                print 'Warning: missing values in ' + path + file
+                print 'Warning: missing values in ' + file
                 break
             # Convert to datetime objects
             curr_units = time_id.units
@@ -70,7 +89,6 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
             if curr_units == 'days since 0000-01-01 00:00:00':
                 curr_units = 'days since 0001-01-01 00:00:00'
             time = num2date(time_id[:], units=curr_units, calendar=time_id.calendar)
-
             # Check if the time values in this file actually contain any
             # dates we're interested in
             if time[0].year > end_year or time[-1].year < start_year:
@@ -99,14 +117,14 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
                         data_tmp = id.variables[var_name][t,:,:]
                     elif realm == 'ocean':
                         data_tmp = id.variables[var_name][t,:,:,:]
-                    # Some of the CMIP5 ocean models are not saved as masked
-                    # arrays, but rather as regular arrays with the value 0
-                    # at all land points. Catch these with a try-except
-                    # block and convert to masked arrays.
-                    try:
-                        mask = data_tmp.mask
-                    except (AttributeError):
-                        data_tmp = ma.masked_where(data_tmp==0, data_tmp)
+                        # Some of the CMIP5 ocean models are not saved as masked
+                        # arrays, but rather as regular arrays with the value 0
+                        # at all land points. Catch these with a try-except
+                        # block and convert to masked arrays.
+                        try:
+                            mask = data_tmp.mask
+                        except (AttributeError):
+                            data_tmp = ma.masked_where(data_tmp==0, data_tmp)
                     if data is None:
                         # Set up data array of correct size
                         if realm == 'atmos':
@@ -138,40 +156,25 @@ def cmip5_field (model, expt, var_name, start_year, end_year):
 
     # Convert from monthly sums to monthly averages
     for t in range(12):
-        if num_months[t] == 0:
-            # None for this month; mask it
-            if realm == 'atmos':
-                data[t,:,:] = ma.masked
-            elif realm == 'ocean':
-                data[t,:,:,:] = ma.masked
+        if num_months[t] != end_year-start_year+1:
+            print 'Problem with number of records: found ' + str(num_months[t]) + ' instead of ' + str(end_year-start_year+1) + ' for month ' + str(t+1)
         else:
             if realm == 'atmos':
                 data[t,:,:] /= num_months[t]
             elif realm == 'ocean':
-                data[t,:,:,:] /= num_months[t]\
+                data[t,:,:,:] /= num_months[t]
 
-    # Convert units for evaporation in NorESM1-ME
-    if var_name == 'evspsbl' and model == 'NorESM1-ME':
+    # Convert units for evaporation in Norwegian models
+    if var_name == 'evspsbl' and model in ['NorESM1-M', 'NorESM1-ME']:
         data = 1e-3*data
     # Opposite sign for evaporation in FGOALS-s2
     if var_name == 'evspsbl' and model == 'FGOALS-s2':
         data = -data
 
-    # Conversions if necessary
-    if var_name in ['pr', 'prsn', 'evspsbl']:
-        # Convert precip/snowfall/evap from kg/m^2/s to
-        # 1e-6 kg/m^2/s
-        data = 1e6*data
-    elif var_name == 'ps':
-        # Convert surface pressure from Pa to kPa
-        data = 1e-3*data
-    elif var_name == 'tas':
-        # Convert temperature from K to C
-        data = data + degKtoC
-    elif var_name == 'thetao' and amin(data) > 100:
+    if var_name == 'thetao' and amin(data) > 100:
         # Convert ocean temperature from K to C if needed
         data = data + degKtoC
-    elif var_name == 'so' and amax(data) < 1:
+    if var_name == 'so' and amax(data) < 1:
         # Convert salinity from fraction to psu if needed
         data = 1e3*data
 

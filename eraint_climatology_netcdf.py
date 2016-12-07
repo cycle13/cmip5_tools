@@ -10,14 +10,11 @@ def eraint_climatology_netcdf ():
     # Date range for climatology
     start_year = 1992
     end_year = 2005
-    # Names of ERA-Interim variables
+    # Names and units of ERA-Interim variables
     var_names = ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10', 'tp', 'sf', 'e', 'ssrd', 'strd']
-    # Variable names to use for NetCDF file
-    var_names_output = ['Pair', 'Tair', 'Hair', 'cloud', 'Uwind', 'Vwind', 'precip', 'snow', 'evap', 'swrad', 'lwrad']
-    # Units of final variables (note there are some conversions in eraint_field)
-    var_units = ['kPa', 'degC', '1', '%', 'm/s', 'm/s', '10^-6 kg/m^2/s', '10^-6 kg/m^2/s', '10^-6 kg/m^2/s', 'W/m^2', 'W/m^2']
+    var_units = ['Pa', 'K', 'K', 'fraction', 'm/s', 'm/s', 'm/12h', 'm/12h', 'm/12h', 'J/m^2/12h', 'J/m^2/12h']
     # Path to output NetCDF file
-    output_file = '/short/y99/kaa561/CMIP5_forcing/atmos/ERA-Interim.nc'
+    output_file = '/short/y99/kaa561/CMIP5_forcing/atmos/climatology/ERA-Interim.nc'
 
     # Loop over variables
     for i in range(len(var_names)):
@@ -44,9 +41,9 @@ def eraint_climatology_netcdf ():
             id.variables['time'].units = 'month'
             id.variables['time'][:] = arange(1, 12+1)
         # Define a new variable in the NetCDF file and fill with data
-        id.createVariable(var_names_output[i], 'f8', ('time', 'latitude', 'longitude'))
-        id.variables[var_names_output[i]].units = var_units[i]
-        id.variables[var_names_output[i]][:,:,:] = data
+        id.createVariable(var_names[i], 'f8', ('time', 'latitude', 'longitude'))
+        id.variables[var_names[i]].units = var_units[i]
+        id.variables[var_names[i]][:,:,:] = data
     id.close()
 
 
