@@ -37,8 +37,8 @@ def rcp_forcing_monthly_atmos ():
                     end_t = start_t + 12
                     model_rcp = id.variables[var][start_t:end_t,:,:]
                     # Impose physical limits on some variables
-                    if var in ['tp', 'sf', 'tcc']:
-                        # Precipitation, snowfall, cloud fraction have minimum 0
+                    if var in ['tp', 'sf', 'tcc', 'ssrd']:
+                        # Precipitation, snowfall, cloud fraction, shortwave have minimum 0
                         index = model_rcp < 0
                         model_rcp[index] = 0.0
                     if var == 'tcc':
@@ -55,8 +55,8 @@ def rcp_forcing_monthly_atmos ():
                         model_rcp[month,:,:] = model_rcp[month,:,:] - model_clim[month,:,:] + eraint_clim[month,:,:]
 
                     # Impose limits again
-                    if var in ['tp', 'sf', 'tcc']:
-                        # Precipitation, snowfall, cloud cover have minimum 0
+                    if var in ['tp', 'sf', 'tcc', 'ssrd']:
+                        # Precipitation, snowfall, cloud cover, shortwave have minimum 0
                         index = model_rcp < 0
                         model_rcp[index] = 0.0
                     if var == 'tcc':

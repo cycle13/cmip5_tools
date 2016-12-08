@@ -26,12 +26,17 @@ def rcp_forcing_subdaily_atmos (expt, model):
     subyear = subyear_start
     for year in range(year_start, year_end+1):
         print 'Processing year ' + str(year)
-        print 'Submonthly variability from ' + str(subyear)
 
         if year % 4 == 0:
             days_per_month[1] = 29
         else:
             days_per_month[1] = 28
+        if year == 2100:
+            days_per_month[1] = 28
+            subyear += 1
+            if subyear > subyear_end:
+                subyear = subyear_start
+        print 'Submonthly variability from ' + str(subyear)
 
         file_6h = output_dir + str(year) + '_6h.nc'
         print 'Setting up ' + file_6h
@@ -152,8 +157,8 @@ def rcp_forcing_subdaily_atmos (expt, model):
                     subdaily = s_id.variables[var][t,:,:]
                     var_full = monthly[month] + subdaily
                     # Impose physical limits on some variables
-                    if var in ['tp', 'sf']:
-                        # Precipitation and snowfall have minimum 0
+                    if var in ['tp', 'sf', 'ssrd']:
+                        # Precipitation, snowfall, shortwave have minimum 0
                         index = var_full < 0
                         var_full[index] = 0.0
                     if var == 'e':
