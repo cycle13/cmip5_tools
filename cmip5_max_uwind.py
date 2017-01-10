@@ -7,9 +7,7 @@ from matplotlib.font_manager import FontProperties
 # Create two plots: (1) the maximum zonal wind speed between 30S and 65S, and
 # (2) the latitude of that maximum zonal wind speed, both against longitude.
 # Plot results for ERA-Interim as well as the given CMIP5 models, averaged over
-# the given season, for the 1992-2005 climatology. Note that in order to run
-# this script, you must first run eraint_climatology_netcdf.py,
-# cmip5_atmos_climatology_netcdf.py, and mmm_atmos_netcdf.py.
+# the given season, for the 1992-2005 climatology. 
 # Input:
 # model_names = list of strings containing model names (either one of the CMIP5
 #               models from cmip5_paths.py, or 'MMM' for the multi-model mean)

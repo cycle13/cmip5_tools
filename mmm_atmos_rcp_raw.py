@@ -2,12 +2,15 @@ from cmip5_paths import *
 from numpy import *
 from netCDF4 import Dataset
 
+# Calculate the multi-model-mean of monthly-averaged atmospheric output for
+# RCPs 4.5 and 8.5. 
 def mmm_atmos_rcp_raw ():
 
     expt_names = ['rcp45', 'rcp85']
     start_year = 2006
     end_year = 2100
     num_ts = 12*(end_year-start_year+1)
+    # Directory containing output files from cmip5_atmos_rcp_raw.py
     directory = '/short/y99/kaa561/CMIP5_forcing/atmos/'
     # Path to ERA-Interim file (created using eraint_climatology_netcdf.py)
     eraint_file = directory + 'climatology/ERA-Interim.nc'
@@ -25,6 +28,7 @@ def mmm_atmos_rcp_raw ():
     lat = id.variables['latitude'][:]
     id.close()
 
+    # Loop over RCPs
     for expt in expt_names:
         print 'Processing experiment ' + expt
 

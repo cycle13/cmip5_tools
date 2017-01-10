@@ -2,8 +2,7 @@ from ARCCSSive import CMIP5
 from cmip5_paths import *
 
 # Build a list of all CMIP5 models which satisfy choose_models.py and also
-# have all the data we need to create RCP 4.5 and 8.5 boundary conditions,
-# including subdaily winds.
+# have all the data we need to create RCP 4.5 and 8.5 boundary conditions.
 def choose_models_future ():
 
     # Get list of models that passed choose_models.py

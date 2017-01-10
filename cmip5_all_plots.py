@@ -2,12 +2,7 @@ from cmip5_paths import *
 from cmip5_plot import *
 
 # Call cmip5_plot.py for all models (including the multi-model mean), all
-# variables (atmosphere and ocean), and all seasons.
-# Note that in order to run this script, you must first run:
-# eraint_climatology_netcdf.py, ecco2_climatology_netcdf.py,
-# cmip5_atmos_climatology_netcdf.py, cmip5_ocean_climatology_netcdf.py,
-# mmm_atmos_netcdf.py, and mmm_ocean_netcdf.py
-# to generate the necessary NetCDF files. Also, the directory "cmip5/" must
+# variables (atmosphere and ocean), and all seasons. The directory "cmip5/" must
 # exist.
 # Input: season = string containing the season key: 'djf', 'mam', 'jja', 'son',
 #                 or 'annual'

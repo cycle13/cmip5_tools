@@ -7,14 +7,9 @@ from matplotlib.font_manager import FontProperties
 # Compare output from CMIP5 models to ERA-Interim (for atmosphere variables) or
 # ECCO2 (for ocean variables) by plotting the given variable, time-averaged over
 # the given season and zonally averaged over the Southern Ocean (for atmosphere
-# variables) or the northern boundary of ROMS, (for ocean variables). 
+# variables) or the northern boundary of ROMS (for ocean variables). 
 # The plot will have the given variable on the x-axis and latitude
 # (for atmosphere variables) or depth (for ocean variables) on the y-axis.
-# Note that in order to run this script, you must have previously run:
-# eraint_climatology_netcdf.py, ecco2_climatology_netcdf.py,
-# cmip5_atmos_climatology_netcdf.py, cmip5_ocean_climatology_netcdf.py,
-# mmm_atmos_netcdf.py, and mmm_ocean_netcdf.py
-# to generate the necessary NetCDF files.
 # Input:
 # var = string containing name of variable to plot
 # season = string containing the season key: 'djf', 'mam', 'jja', 'son', or

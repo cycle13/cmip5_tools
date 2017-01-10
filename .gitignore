@@ -2,5 +2,6 @@
 *.png
 *.log
 models_to_use
+future_forcing
 cmip5/
 cmip5_old/

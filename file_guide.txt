@@ -1,7 +1,8 @@
 cmip5_paths.py: Contains two useful functions: get_directory, which returns the
                 directory containing monthly output for the specified model,
 		variable, and experiment; and build_model_list, which returns
-		a list of all 39 CMIP5 models in this analysis.
+		a list of all CMIP5 models in this analysis (chosen with the
+		aid of choose_models.py and choose_models_future.py).
 		To run: These functions are both designed to be called by other
 		        functions; see for example cmip5_field.py and
 			cmip5_eraint_rms_errors.py. Note that for get_directory
@@ -11,7 +12,8 @@ cmip5_paths.py: Contains two useful functions: get_directory, which returns the
 
 eraint_field.py: Reads ERA-Interim monthly data for the given variable name,
                  between the given start and end years. Returns the monthly
-		 climatology.
+		 climatology. (If you want just one year with no climatological
+		 averaging, set the start and end year to be the same.)
                  To run: The function eraint_field is designed to be called
 		         by other functions; see for example
 			 eraint_climatology_netcdf.py. If you are using it,
@@ -29,9 +31,16 @@ ecco2_field.py: Reads ECCO2 data for the given variable name, between the given
 			(eg paths to ECCO2 data, and the location of the ROMS
 			northern boundary).
 
+interp_model2era.py: Interpolates a given CMIP5 field to the ERA-Interim grid.
+                     To run: The function interp_model2era is designed to be
+		     called by other functions; see for example
+		     cmip5_atmos_climatology_netcdf.py.
+
 cmip5_field.py: Reads CMIP5 output for the given model, experiment, and variable
-                name. Returns the monthly climatology as well as the grid
-		(longitude, latitude, and depth arrays).
+                name. Returns the monthly climatology over the given years as
+		well as the grid (longitude, latitude, and depth arrays). If
+		you want one year of data with no climatological averaging, set
+		the start year to the be the same as the end year.
 		To run: The function cmip5_field is designed to be called by
 		        other functions; see for example
 			cmip5_atmos_climatology_netcdf.py. Note that for this
@@ -122,11 +131,7 @@ cmip5_eraint_rms_errors.py: Calculates root-mean-square errors (as in Gleckler
 			    Also calculate the relative errors as in Gleckler
 			    et al. and make a "portrait plot" of coloured tiles
 			    in a model vs. variable matrix. Save both rms errors
-			    and relative errors into text files. Note that to
-			    run this script, you must have previously run
-			    eraint_climatology_netcdf.py,
-			    cmip5_atmos_climatology_netcdf.py, and
-			    mmm_atmos_netcdf.py.
+			    and relative errors into text files. 
 			    To run: First edit the variable "directory", near
 			            the top of the file, to suit your
 				    filesystem, and "roms_grid" to point to the
@@ -136,19 +141,11 @@ cmip5_eraint_rms_errors.py: Calculates root-mean-square errors (as in Gleckler
 cmip5_ecco2_rms_errors.py: Same as cmip5_eraint_rms_errors.py, but for ECCO2
                            ocean variables rather than ERA-Interim atmospheric
 			   variables, at the northern boundary of ROMS
-			   (currently 30S). Note that to run this script, you
-			   must have previously run
-			   ecco2_climatology_netcdf.py,
-			   cmip5_ocean_climatology_netcdf.py, and
-			   mmm_ocean_netcdf.py.
+			   (currently 30S).
 			   To run: First edit the variable "directory", near
 			           the top of the file, to suit your filesystem.
 				   Then open python or ipython and type
 				   "run cmip5_ecco2_rms_errors.py".
-
-		          "run h_circumpolar.py". The script will prompt you
-			  for paths to the ROMS grid file and the filename
-			  to save the figure as.
 
 cmip5_plot.py: Compare output from CMIP5 models to ERA-Interim (for atmosphere
                variables) or ECCO2 (for ocean variables) by plotting the given
@@ -157,11 +154,7 @@ cmip5_plot.py: Compare output from CMIP5 models to ERA-Interim (for atmosphere
 	       the northern boundary of ROMS (for ocean variables). The plot
 	       will have the given variable on the x-axis and latitude (for
 	       atmosphere variables) or depth (for ocean variables) on the
-	       y-axis. Note that in order to run this script, you must first
-	       run eraint_climatology_netcdf.py, ecco2_climatology_netcdf.py,
-	       cmip5_atmos_climatology_netcdf.py,
-	       cmip5_ocean_climatology_netcdf.py, mmm_atmos_netcdf.py, and
-	       mmm_ocean_netcdf.py to generate the necessary NetCDF files.
+	       y-axis. 
 	       To run: First edit the variable "directory", near the top of the
 	               file, to suit your filesystem, and the variable
 		       "roms_grid" to point to your ROMS grid file. (Note that
@@ -181,13 +174,7 @@ cmip5_plot.py: Compare output from CMIP5 models to ERA-Interim (for atmosphere
 
 cmip5_all_plots.py: Call cmip5_plot.py for all models (including the multi-model
                     mean), all variables (atmosphere and ocean), and all
-		    seasons. Note that in order to run this script, you must
-		    have previously run eraint_climatology_netcdf.py,
-		    ecco2_climatology_netcdf.py,
-		    cmip5_atmos_climatology_netcdf.py,
-		    cmip5_ocean_climatology_netcdf.py, mmm_atmos_netcdf.py, and
-		    mmm_ocean_netcdf.py. Also, the directory "cmip5/" must
-		    exist.
+		    seasons. The directory "cmip5/" must exist.
 		    To run: Open python or ipython and type
 		            "run cmip5_all_plots.py".
 
@@ -196,9 +183,6 @@ cmip5_max_uwind.py: Create two plots: (1) the maximum zonal wind speed between
 		    wind speed, both against longitude. Plot results for
 		    ERA-Interim as well as the given CMIP5 models, averaged
 		    over the given season, for the 1992-2005 climatology.
-		    Note that in order to run this script, you must have
-		    previously run eraint_climatology_netcdf.py,
-		    cmip5_atmos_climatology_netcdf.py, and mmm_atmos_netcdf.py.
 		    To run: First edit the variable "directory", near the top
 		            of the file, to suit your filesystem. Then open
 			    python or ipython and type "run cmip5_max_uwind.py".
@@ -219,7 +203,110 @@ choose_models.py: Builds a list of all CMIP5 models that have the data we need
 
 choose_models_future.py: Builds a list of all CMIP5 models which satisfy
                          choose_models.py and also have all the data we need
-			 to create RCP 4.5 and 8.5 boundary conditions,
-			 including subdaily winds.
+			 to create RCP 4.5 and 8.5 boundary conditions.
 			 To run: Open python or ipython and type
 			         "run choose_models_future.py".
+
+cmip5_atmos_rcp_raw.py: For the given CMIP5 model, read monthly averages of 11
+                        atmospheric variables for RCPs 4.5 and 8.5. Interpolate
+			to the ERA-Interim grid, and save to NetCDF files
+			(one file per RCP).
+			To run: First edit the variables output_base and
+			        eraint_file, near the top of the file, to suit
+				your filesystem. Then make sure that you have
+				scipy version 0.14 or higher (on raijin, this
+				means switching to python/2.7.6; instructions
+				at the top of the file). To call this function
+				for all CMIP5 models, open python or ipython
+				and type "run cmip5_atmos_rcp_raw.py". To call
+				this function for just one model, e.g.
+				ACCESS1-3, open python or ipython and type
+				"from cmip5_atmos_rcp_raw import *" and then
+				"cmip5_atmos_rcp_raw('ACCESS1-3')".
+
+mmm_atmos_rcp_raw.py: Calculate the multi-model-mean of monthly-averaged
+                      atmospheric output for RCPs 4.5 and 8.5. 
+		      To run: First edit the variables directory and
+		              eraint_file, near the top of your file, to suit
+			      your filesystem. Then open python or ipython
+			      and type "run mmm_atmos_rcp_raw.py".
+
+rcp_forcing_monthly_atmos.py: Bias-correct the RCP monthly atmospheric forcing
+                              from ACCESS1-3 and the multi-model mean (MMM):
+			      Subtract the model's 1992-2005 climatology, and
+			      add ERA-Interim's 1992-2005 climatology in its
+			      place.
+			      To run: Make copies of the raw RCP files as
+			              described at the top of this file. Edit
+				      the variable "directory_head" near the
+				      top of the file. Then open python or
+				      ipython and type
+				      "run rcp_forcing_monthly_atmos.py".
+
+extract_submonthly_variability.py: For the given year, calculate the 6- and
+                                   12-hourly anomalies from the monthly mean,
+				   for ERA-Interim atomspheric variables.
+				   Save this sub-monthly variability in
+				   NetCDF files (one file for 6-hourly, one
+				   for 12-hourly).
+				   To run: First edit the directories near
+				           the top of the file to suit your
+					   filesystem. Then open python or
+					   ipython. To process the 12-year
+					   period 1994-2005 inclusive, type
+					"run extract_submonthly_variability.py".
+					   To process a single year, say 1994,
+					   type
+			          "from extract_submonthly_variability import *"
+			                   followed by
+			                 "extract_submonthly_variability(1994)".
+
+rcp_forcing_subdaily_atmos.py: For the given experiment (RCP 4.5 or 8.5) and
+                               model (ACCESS1-3 or MMM), add ERA-Interim
+			       submonthly variability to the bias-corrected
+			       monthly RCP forcing, in a repeating 12-year
+			       cycle.
+			       To run: First edit the directories near the top
+			               of the file to suit your filesystem.
+				       Then open python or ipython and type
+				       "run rcp_forcing_subdaily_atmos.py".
+				       You will be prompted for the experiment
+				       and the model name.
+
+unravel_fesom.py: For the given experiment (RCP 4.5 or 8.5) and model
+                  (ACCESS1-3 or MMM), convert the final bias-corrected,
+		  submonthly-variability-added RCP forcing from the original
+		  file structure (two files per year, containing all 6-hourly
+		  variables and all 12-hourly variables) to the file structure
+		  needed by FESOM (four files per 6-hourly variable and two
+		  files per 12-hourly variable, each containing data at the
+		  same time of day for the entire length of the simulation).
+		  To run: First edit the directories near the top of the file
+		          to suit your filesystem. Then open python or ipython
+			  and type "run unravel_fesom.py". You will be
+			  prompted for the experiment and the model name.
+
+
+ORDER OF THINGS TO RUN:
+
+TO GENERATE RMS ERROR ANALYSES AND PLOTS:
+eraint_climatology_netcdf.py
+cmip5_atmos_climatology_netcdf.py
+mmm_atmos_netcdf.py
+cmip5_eraint_rms_errors.py
+ecco2_climatology_netcdf.py
+cmip5_ocean_climatology_netcdf.py
+mmm_ocean_netcdf.py
+cmip5_ecco2_rms_errors.py
+cmip5_plot.py AND/OR cmip5_all_plots.py AND/OR cmip5_max_uwind.py
+
+TO GENERATE ATMOSPHERIC RCP FORCING:
+eraint_climatology_netcdf.py
+cmip5_atmos_climatology_netcdf.py
+mmm_atmos_netcdf.py
+cmip5_atmos_rcp_raw.py
+mmm_atmos_rcp_raw.py
+rcp_forcing_monthly_atmos.py (first make new directories as described in file)
+extract_submonthly_variability.py
+rcp_forcing_subdaily_atmos.py
+unravel_fesom.py

@@ -10,9 +10,7 @@ from matplotlib.pyplot import *
 # climatology averaged over 1992-2005 inclusive. Also calculate the relative
 # errors as in Gleckler et al. and make a "portrait plot" of coloured tiles
 # in a model vs variable matrix. Save both rms errors and relative errors into
-# text files. Note that to run this script, you must have previously run
-# ecco2_climatology_netcdf.py, cmip5_ocean_climatology_netcdf.py, and
-# mmm_ocean_netcdf.py.
+# text files.
 def cmip5_ecco2_rms_errors ():
 
     # Path to directory containing climatolgoy NetCDF files (created by

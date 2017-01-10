@@ -1,13 +1,6 @@
 from numpy import *
 from scipy.interpolate import RegularGridInterpolator
 
-# NB for raijin users: RegularGridInterpolator needs python/2.7.6 but the
-# default is 2.7.3. Before running this script, switch them as follows:
-# module unload python/2.7.3
-# module unload python/2.7.3-matplotlib
-# module load python/2.7.6
-# module load python/2.7.6-matplotlib
-
 # Interpolate a given CMIP5 field to the ERA-Interim grid.
 # Input:
 # model_data = 2D array (size mxn) of model data for the given variable
@@ -18,7 +11,7 @@ from scipy.interpolate import RegularGridInterpolator
 # Output:
 # data_interp = 2D array (size pxq) of model data interpolated to the
 #               ERA-Interim grid 
-def interp_model2era(model_data, model_lon, model_lat, era_lon, era_lat):
+def interp_model2era (model_data, model_lon, model_lat, era_lon, era_lat):
 
     # Make sure the model's longitude goes from 0 to 360, not -180 to 180
     index = model_lon < 0

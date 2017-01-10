@@ -11,6 +11,10 @@ from netCDF4 import Dataset
 # module load python/2.7.6
 # module load python/2.7.6-matplotlib
 
+# For the given CMIP5 model, read monthly averages of 11 atmospheric variables
+# for RCPs 4.5 and 8.5. Interpolate to the ERA-Interim  grid, and save to NetCDF
+# files (one file per RCP).
+# Input: model_name = name of CMIP5 model to read
 def cmip5_atmos_rcp_raw (model_name):
 
     expt_names = ['rcp45','rcp85']

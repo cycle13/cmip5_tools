@@ -36,7 +36,7 @@ def choose_models ():
             if var == 'clt' and model_name == 'bcc-csm1-1-m':
                 dir = '/g/data1/ua6/unofficial-ESG-replica/tmp/tree/esgf2.dkrz.de/thredds/fileServer/cmip5/output1/BCC/bcc-csm1-1-m/historical/mon/atmos/Amon/r1i1p1/v20120709/clt/'
             if len(dir) == 0:
-                # Mising data
+                # Missing data
                 keep = False
                 print 'Skipping model ' + model_name + ' because missing ' + var
         if keep:
