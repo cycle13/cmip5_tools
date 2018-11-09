@@ -17,24 +17,24 @@ def cmip5_eraint_rms_errors():
     # eraint_climatology_netcdf.py and cmip5_atmos_climatology_netcdf.py)
     directory = '/short/y99/kaa561/CMIP5_forcing/atmos/climatology/'
     # Variable names in NetCDF files
-    var_names = ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10', 'tp', 'sf', 'e', 'ssrd', 'strd']
+    var_names = ['t2m', 'd2m', 'u10', 'v10', 'sp', 'tp', 'sf', 'e', 'ssrd', 'strd'] #['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10', 'tp', 'sf', 'e', 'ssrd', 'strd']
     # Path to ROMS grid
-    roms_grid = '/short/m68/kaa561/ROMS-CICE-MCT/apps/common/grid/circ30S_quarterdegree_good.nc'
+    #roms_grid = '/short/m68/kaa561/metroms_iceshelf/apps/common/grid/circ30S_quarterdegree.nc'
     # Radius of the Earth in metres
     r = 6.371e6
     # Degrees to radians conversion factor
     deg2rad = pi/180.0
 
     # Read ROMS grid
-    id = Dataset(roms_grid, 'r')
-    lat_rho = id.variables['lat_rho'][:,:]
-    mask_rho = id.variables['mask_rho'][:,:]
-    mask_zice = id.variables['mask_zice'][:,:]
-    id.close()
+    #id = Dataset(roms_grid, 'r')
+    #lat_rho = id.variables['lat_rho'][:,:]
+    #mask_rho = id.variables['mask_rho'][:,:]
+    #mask_zice = id.variables['mask_zice'][:,:]
+    #id.close()
     # Determine latitude bounds of ocean points not in ice shelf cavities
-    lat_roms = ma.masked_where(mask_rho-mask_zice==0, lat_rho)
-    latS = amin(lat_roms)
-    latN = amax(lat_roms)
+    #lat_roms = ma.masked_where(mask_rho-mask_zice==0, lat_rho)
+    latS = -80 #amin(lat_roms)
+    latN = -30 #amax(lat_roms)
 
     # Read ERA-Interim grid
     id = Dataset(directory + 'ERA-Interim.nc', 'r')
@@ -113,29 +113,32 @@ def cmip5_eraint_rms_errors():
                 # point, weighted by dx*dy*dt
                 rms_errors[i,j] = sqrt(sum((model_data - era_data)**2*dx*dy*dt)/sum(dx*dy*dt))
 
-        # Calculate relative error as (E-E')/E where E is the RMS error for each
+        # Calculate relative error as (E-E')/E' where E is the RMS error for each
         # model, and E' is the median error across all models for this variable
         median_error = median(rms_errors[i,:-1])
         for j in range(len(model_names)):
-            relative_errors[i,j] = (rms_errors[i,j] - median_error)/rms_errors[i,j]
+            relative_errors[i,j] = (rms_errors[i,j] - median_error)/median_error
+
+    bound = amax(abs(relative_errors))
 
     # Make the portrait plot
-    fig = figure(figsize=(8,12))
+    fig = figure(figsize=(8,15))
     ax = fig.add_subplot(111)
-    img = ax.pcolormesh(transpose(relative_errors), vmin=-0.8, vmax=0.8, cmap='RdBu_r')
+    img = ax.pcolormesh(transpose(relative_errors), vmin=-bound, vmax=bound, cmap='RdBu_r')
 
     # Configure plot
     # Add model names and variable names to the axes
-    xticks(arange(0.5, len(var_names)+0.5), var_names, rotation=-45)
-    yticks(arange(0.5, len(model_names)+0.5), model_names)
+    xticks(arange(0.5, len(var_names)+0.5), var_names, rotation=-45, fontsize=14)
+    yticks(arange(0.5, len(model_names)+0.5), model_names, fontsize=14)
     xlim([0, len(var_names)])
     ylim([len(model_names), 0])
-    title('Relative error', fontsize=16)
+    title('Relative error', fontsize=24)
     # Move the plot over a bit to make room for all the model names
     box = ax.get_position()
-    ax.set_position([box.x0+box.width*0.1, box.y0, box.width*0.9, box.height])
-    cbaxes = fig.add_axes([0.3,0.03,0.5,0.025])
-    colorbar(img, orientation='horizontal', ticks=arange(-0.75, 1, 0.25), cax=cbaxes)
+    ax.set_position([box.x0+box.width*0.15, box.y0, box.width*0.85, box.height])
+    cbaxes = fig.add_axes([0.325,0.03,0.5,0.025])
+    cbar = colorbar(img, orientation='horizontal', ticks=arange(-0.75, 1.25, 0.5), cax=cbaxes)
+    cbar.ax.tick_params(labelsize=14)
     savefig('relative_errors_eraint.png')
 
     # Write RMS errors to a text file, tabulated nicely

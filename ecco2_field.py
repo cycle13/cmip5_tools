@@ -20,7 +20,7 @@ def ecco2_field (var_name, start_year, end_year):
     # Latitude of the northern boundary of the circumpolar ROMS domain
     nbdry = -30
     # Directory where ECCO2 data is stored
-    ecco2_dir = '/short/m68/kaa561/ROMS-CICE-MCT/data/ECCO2/raw/'
+    ecco2_dir = '/short/m68/kaa561/metroms_iceshelf/data/originals/ECCO2/'
     # Middle of ECCO2 file names
     ecco2_mid = '.1440x720x50.'
 

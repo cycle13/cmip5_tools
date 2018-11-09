@@ -10,7 +10,7 @@ from ARCCSSive import CMIP5
 #       model output doesn't exist, return an empty string.
 def get_directory (model_name, expt, var_name):
 
-    cmip5 = CMIP5.connect()
+    cmip5 = CMIP5.DB.connect()
 
     # Figure out whether it is an atmosphere or ocean variable
     if var_name in ['ps', 'tas', 'huss', 'clt', 'uas', 'vas', 'pr', 'prsn', 'evspsbl', 'rsds', 'rlds']:

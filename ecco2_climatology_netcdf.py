@@ -11,11 +11,11 @@ def ecco2_climatology_netcdf ():
     start_year = 1992
     end_year = 2005
     # Names of ECCo2 variables
-    var_names = ['THETA', 'SALT', 'UVEL', 'VVEL']
+    var_names = ['THETA', 'SALT', 'VVEL']
     # Variable names to use for NetCDF file
-    var_names_output = ['temp', 'salt']
+    var_names_output = ['temp', 'salt', 'v']
     # Units of final variables (note there are some conversions in ecco2_field)
-    var_units = ['degC', 'psu']
+    var_units = ['degC', 'psu', 'm/s']
     # Path to output NetCDF file
     output_file = '/short/y99/kaa561/CMIP5_forcing/ocean/climatology/ECCO2.nc'
 

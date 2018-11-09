@@ -6,7 +6,7 @@ from netCDF4 import Dataset
 # forcing, in a repeating 12-year cycle.
 # Input:
 # expt = 'rcp45' or 'rcp85'
-# model = 'ACCESS1-3' or 'MMM'
+# model = 'ACCESS1-0' or 'MMM'
 def rcp_forcing_subdaily_atmos (expt, model):
 
     # Path to monthly averaged RCP forcing (bias-corrected)
@@ -18,11 +18,11 @@ def rcp_forcing_subdaily_atmos (expt, model):
     # Path to output directory
     output_dir = '/short/y99/kaa561/CMIP5_forcing/atmos/' + expt + '/' + model + '/'
     # Variable names
-    var_names_6h = ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10']
-    var_names_12h = ['tp', 'sf', 'e', 'ssrd', 'strd']
+    var_names_6h = ['sp'] #['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10']
+    var_names_12h = ['e'] #['tp', 'sf', 'e', 'ssrd', 'strd']
     # Variable units
-    var_units_6h = ['Pa', 'K', 'K', 'fraction', 'm/s', 'm/s']
-    var_units_12h = ['m/12h', 'm/12h', 'm/12h', 'J/m^2/12h', 'J/m^2/12h']
+    var_units_6h = ['Pa'] #['Pa', 'K', 'K', 'fraction', 'm/s', 'm/s']
+    var_units_12h = ['m/12h'] #['m/12h', 'm/12h', 'm/12h', 'J/m^2/12h', 'J/m^2/12h']
     year_start = 2006
     year_end = 2100
     # Submonthly variability years
@@ -200,10 +200,11 @@ def rcp_forcing_subdaily_atmos (expt, model):
                         # Precipitation, snowfall, shortwave have minimum 0
                         index = var_full < 0
                         var_full[index] = 0.0
-                    if var == 'e':
+                    #if var == 'e':
                         # Evaporation has maximum zero
-                        index = var_full > 0
-                        var_full[index] = 0.0
+                        # Maybe I should not have done this because condensation is in here too?!
+                        #index = var_full > 0
+                        #var_full[index] = 0.0
                     o_id.variables[var][t,:,:] = var_full
                 t_start = t_end
         s_id.close()
@@ -220,7 +221,7 @@ def rcp_forcing_subdaily_atmos (expt, model):
 if __name__ == "__main__":
 
     expt = raw_input("Experiment (rcp45 or rcp85): ")
-    model = raw_input("Model name (MMM or ACCESS1-3): ")
+    model = raw_input("Model name (MMM or ACCESS1-0): ")
     rcp_forcing_subdaily_atmos(expt, model)
 
     

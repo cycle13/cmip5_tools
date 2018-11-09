@@ -23,7 +23,7 @@ def extract_submonthly_variability (year):
     if year % 4 == 0:
         days_per_month[1] = 29
     # Variables with 6-hourly values
-    var_names_6h = ['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10']
+    var_names_6h = ['u10', 'v10'] #['sp', 't2m', 'd2m', 'tcc', 'u10', 'v10']
     # Variables with 12-hourly values
     var_names_12h = ['tp', 'sf', 'e', 'ssrd', 'strd']
 
@@ -78,8 +78,8 @@ def extract_submonthly_variability (year):
         s_id.close()
     o_id.close()
 
-    # Read 12-hour time axis for this year
-    id = Dataset(subdaily_dir + 'FC_' + str(year) + subdaily_tail, 'r')
+    '''# Read 12-hour time axis for this year
+    id = Dataset(subdaily_dir + 'ER_' + str(year) + subdaily_tail, 'r')
     time_12h = id.variables['time'][:]
     id.close()
 
@@ -130,7 +130,7 @@ def extract_submonthly_variability (year):
                 o_id.variables[var][t,:,:] = subdaily - monthly[month]
             t_start = t_end
         s_id.close()
-    o_id.close()
+    o_id.close()'''
 
 
 # Command-line interface

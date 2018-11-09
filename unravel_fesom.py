@@ -10,7 +10,7 @@ from numpy import *
 # simulation).
 # Input:
 # expt = 'rcp45' or 'rcp85'
-# model = 'ACCESS1-3' or 'MMM'
+# model = 'ACCESS1-0' or 'MMM'
 def unravel_fesom (expt, model):
 
     # Path to final bias-corrected, submonthly-variability-added RCP forcing
@@ -18,11 +18,11 @@ def unravel_fesom (expt, model):
     # Desired path to output FESOM forcing
     output_dir = '/short/y99/kaa561/FESOM/RCP_forcing/' + expt + '/' + model + '/'
     # Variable names
-    var_names_6h = ['t2m', 'd2m', 'u10', 'v10']
+    var_names_6h = ['sp', 't2m', 'd2m', 'u10', 'v10']
     # Variable units
-    var_units_6h = ['K', 'K', 'm/s', 'm/s']
+    var_units_6h = ['Pa', 'K', 'K', 'm/s', 'm/s']
     # Beginning of output filename for each variable
-    file_heads_6h = ['tair', 'tdew', 'uwind', 'vwind']
+    file_heads_6h = ['pair', 'tair', 'tdew', 'uwind', 'vwind']
     # End of output filename for each time of day
     file_tails_6h = ['_00.nc', '_06.nc', '_12.nc', '_18.nc']
     # Same for 12-hourly variables
@@ -136,5 +136,5 @@ def unravel_fesom (expt, model):
 if __name__ == "__main__":
 
     expt = raw_input("Experiment (rcp45 or rcp85): ")
-    model = raw_input("Model name (MMM or ACCESS1-3): ")
+    model = raw_input("Model name (MMM or ACCESS1-0): ")
     unravel_fesom(expt, model)
